@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Profile | {{ super }}{% endblock %}
+
+{% block body %}
+  <div>
+    <h1>
+      {{ user.username }}
+    </h1>
+    <div>
+      <table>
+        <tbody>
+          <tr>
+            <td>First Name:</td>
+            <td>{{ user.first_name }}</td>
+          </tr>
+          <tr>
+            <td>Last Name:</td>
+            <td>{{ user.last_name }}</td>
+          </tr>
+          <tr>
+            <td>Email:</td>
+            <td>{{ user.email }}</td>
+          </tr>
+          <tr>
+            <td>Avatar:</td>
+            <td>{{ profile.avatar }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        <a href="{% url 'accounts:bio' user_id=user.pk %}">Bio</a>
+      </p>
+      <p>
+        <a href="#">Edit Profile</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

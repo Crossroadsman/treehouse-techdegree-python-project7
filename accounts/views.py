@@ -1,9 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 
 
 def sign_in(request):
@@ -15,7 +15,7 @@ def sign_in(request):
                 user = form.user_cache
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(
+                    return redirect(
                         reverse('home')  # TODO: go to profile
                     )
                 else:
@@ -46,11 +46,33 @@ def sign_up(request):
                 request,
                 "You're now a user! You've been signed in, too."
             )
-            return HttpResponseRedirect(reverse('home'))  # TODO: go to profile
+            return redirect(reverse('home'))  # TODO: go to profile
     return render(request, 'accounts/sign_up.html', {'form': form})
 
 
 def sign_out(request):
     logout(request)
     messages.success(request, "You've been signed out. Come back soon!")
-    return HttpResponseRedirect(reverse('home'))
+    return redirect(reverse('home'))
+
+
+def profile(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    profile = user.userprofile
+    template = 'accounts/profile.html'
+    context = {'user': user,
+               'profile': profile}
+    return render(request, template, context)
+
+
+def edit_profile(request, user_id):
+    pass
+
+
+def bio(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    profile = user.userprofile
+    template = 'accounts/bio.html'
+    context = {'user': user,
+               'profile': profile}
+    return render(request, template, context)
