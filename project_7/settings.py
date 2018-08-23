@@ -40,13 +40,12 @@ INSTALLED_APPS = [
     'accounts',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -123,3 +122,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
 ]
+
+# Media files (user images, etc)
+# https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-MEDIA_ROOT
+MEDIA_ROOT = os.path.join(
+    BASE_DIR,
+    'public',
+    'media'    
+)
+MEDIA_URL = '/public/media/'
