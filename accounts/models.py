@@ -22,13 +22,17 @@ class UserProfile(models.Model):
                                 on_delete=models.CASCADE
     )
 
-    given_name = models.CharField(max_length=255)
-    family_name = models.CharField(max_length=255)
-
     date_of_birth = models.DateField()
     bio = models.TextField()
 
     # Optional Fields:
+    given_name = models.CharField(max_length=255,
+                                  blank=True,
+                                  default='')
+    family_name = models.CharField(max_length=255,
+                                  blank=True,
+                                  default='')
+
     avatar = models.ImageField(
         upload_to=user_avatar_path,
         blank=True,
@@ -77,7 +81,7 @@ class UserProfile(models.Model):
         if prefix:
             prefix += "("
             suffix = ")"
-        return prefix + self.email + suffix
+        return prefix + self.user.email + suffix
 
     def get_absolute_url(self):
         return reverse('accounts:profile', 
