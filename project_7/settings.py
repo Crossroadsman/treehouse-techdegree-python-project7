@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
     'accounts',
 ]
 
@@ -131,3 +132,5 @@ MEDIA_ROOT = os.path.join(
     'media'    
 )
 MEDIA_URL = '/public/media/'
+
+AUTH_USER_MODEL = 'users.P7User'

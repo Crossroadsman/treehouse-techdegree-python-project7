@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -11,13 +12,18 @@ def user_avatar_path(instance, filename):
     `instance` is the object with the ImageField;
     `filename` is the file's original filename
     """
-    username = instance.user.username
+    username = instance.user_id
     _, ext = os.path.splitext(filename)
     return 'avatars/{}{}'.format(username, ext)
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE
+    )
+
+    given_name = models.CharField(max_length=255)
+    family_name = models.CharField(max_length=255)
 
     date_of_birth = models.DateField()
     bio = models.TextField()
@@ -62,8 +68,17 @@ class UserProfile(models.Model):
     )
 
     def __str__(self):
-        return self.user.username
+        prefix = ""
+        suffix = ""
+        if self.given_name:
+            prefix += self.given_name + " "
+        if self.family_name:
+            prefix += str(self.family_name).upper() + " "
+        if prefix:
+            prefix += "("
+            suffix = ")"
+        return prefix + self.email + suffix
 
     def get_absolute_url(self):
         return reverse('accounts:profile', 
-                       kwargs={'user_id': self.user.pk,})
+                       kwargs={'user_id': self.user_id,})
