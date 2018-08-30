@@ -1,7 +1,9 @@
 from django.contrib import auth
 from django.contrib.auth.models import (
     BaseUserManager,
-    AbstractBaseUser
+    AbstractBaseUser,
+    Permission,
+    Group
 )
 from django.core.exceptions import PermissionDenied
 from django.db import models
@@ -41,6 +43,16 @@ class P7User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="users",
+        blank=True,
+    )
+    groups = models.ManyToManyField(
+        Group,
+        related_name="users",
+        blank=True,
+    )
 
     # note the following is an attribute, not a field
     objects = P7UserManager()

@@ -12,6 +12,7 @@ class UserProfileForm(forms.ModelForm):
                   "family_name",
                   "avatar",
                   "city",
+                  "state",
                   "country",
                   "favourite_animal",
                   "hobby",

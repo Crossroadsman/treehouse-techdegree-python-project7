@@ -36,7 +36,7 @@
         <a href="{% url 'accounts:bio' user_id=user.pk %}">Bio</a>
       </p>
       <p>
-        <a href="#">Edit Profile</a>
+        <a href="{% url 'accounts:edit_profile' user_id=user.pk %}">Edit Profile</a>
       </p>
     </div>
   </div>
