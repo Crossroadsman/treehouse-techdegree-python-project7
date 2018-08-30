@@ -5,18 +5,22 @@
 {% block body %}
   <div>
     <h1>
-      {{ user.username }}
+      {% if user.userprofile %}
+        {{ user.userprofile }}
+      {% else %}
+        {{ user }}
+      {% endif %}
     </h1>
     <div>
       <table>
         <tbody>
           <tr>
             <td>First Name:</td>
-            <td>{{ user.first_name }}</td>
+            <td>{{ profile.given_name }}</td>
           </tr>
           <tr>
             <td>Last Name:</td>
-            <td>{{ user.last_name }}</td>
+            <td>{{ profile.family_name }}</td>
           </tr>
           <tr>
             <td>Email:</td>

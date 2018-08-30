@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Profile | {{ super }}{% endblock %}
+
+{% block body %}
+  <div>
+    <h1>
+      {% if user.userprofile %}
+        {{ user.userprofile }}
+      {% else %}
+        {{ user }}
+      {% endif %}
+    </h1>
+    <div>
+      <form method="POST">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+        <input type="submit" class="button-primary" value="Save">
+      </form>
+    </div>
+  </div>
+{% endblock %}

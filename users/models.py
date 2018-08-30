@@ -1,7 +1,9 @@
+from django.contrib import auth
 from django.contrib.auth.models import (
     BaseUserManager,
     AbstractBaseUser
 )
+from django.core.exceptions import PermissionDenied
 from django.db import models
 
 
@@ -55,3 +57,42 @@ class P7User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+    def has_perm(self, perm, obj=None):
+        """As per the django src:
+        Return True if the user has the specified permission. Query all
+        available auth backends, but return immediately if any backend returns
+        True. Thus, a user who has permission from a single auth backend is
+        assumed to have permission in general. If an object is provided, check
+        permissions for that object.
+        """
+        # Active superusers have all permissions.
+        if self.is_active and self.is_superuser:
+            return True
+
+        # Otherwise check the backends
+        for backend in auth.get_backends():
+            if not hasattr(backend, 'has_perm'):
+                continue
+            try:
+                if backend.has_perm(self, perm, obj):
+                    return True
+            except PermissionDenied:
+                return False
+        return False
+
+    def has_module_perms(self, app_label):
+        # Active superusers have all permissions.
+        if self.is_active and self.is_superuser:
+            return True
+
+        # Otherwise check the backends
+        for backend in auth.get_backends():
+            if not hasattr(backend, 'has_module_perms'):
+                continue
+            try:
+                if backend.has_module_perms(self, app_label):
+                    return True
+            except PermissionDenied:
+                return False
+        return False

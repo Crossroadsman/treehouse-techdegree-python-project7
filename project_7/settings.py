@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -134,3 +135,6 @@ MEDIA_ROOT = os.path.join(
 MEDIA_URL = '/public/media/'
 
 AUTH_USER_MODEL = 'users.P7User'
+
+# Default is to go to `accounts/profile`
+LOGIN_REDIRECT_URL = reverse_lazy('home')

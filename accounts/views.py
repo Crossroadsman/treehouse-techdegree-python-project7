@@ -1,9 +1,13 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
+
+from users.forms import P7UserCreationForm, P7UserChangeForm
+from accounts.models import UserProfile
+from accounts.forms import UserProfileForm
+
 
 
 def sign_in(request):
@@ -32,13 +36,13 @@ def sign_in(request):
 
 
 def sign_up(request):
-    form = UserCreationForm()
+    form = P7UserCreationForm()
     if request.method == 'POST':
-        form = UserCreationForm(data=request.POST)
+        form = P7UserCreationForm(data=request.POST)
         if form.is_valid():
             form.save()
             user = authenticate(
-                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
                 password=form.cleaned_data['password1']
             )
             login(request, user)
@@ -57,7 +61,11 @@ def sign_out(request):
 
 
 def profile(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
+    print("profile function")
+    user = get_object_or_404(get_user_model(), pk=user_id)
+    if not hasattr(user, 'userprofile'):
+        return redirect(reverse('accounts:edit_profile',
+                                kwargs={'user_id': user_id}))
     profile = user.userprofile
     template = 'accounts/profile.html'
     context = {'user': user,
@@ -66,11 +74,36 @@ def profile(request, user_id):
 
 
 def edit_profile(request, user_id):
-    pass
+    print("edit profile function")
+    user = get_object_or_404(get_user_model(), pk=user_id)
+    if hasattr(user, 'userprofile'):
+        up_instance = user.userprofile
+    else:
+        up_instance = None
+    if request.method == "POST":
+        user_form = P7UserChangeForm(request.POST, instance=user)
+        profile_form = UserProfileForm(request.POST, instance=up_instance)
+        if all([user_form.is_valid(),
+                profile_form.is_valid()]):
+            user_form.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+            return redirect(reverse('accounts:profile', kwargs={'user_id': user_id}))
+    
+    else:  # GET
+        user_form = P7UserChangeForm(instance=user)
+        profile_form = UserProfileForm(instance=up_instance)
+    
+    template = 'accounts/edit_profile.html'
+    context = {'user_form': user_form,
+               'profile_form': profile_form}
+    return render(request, template, context)
+        
 
 
 def bio(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
+    user = get_object_or_404(get_user_model(), pk=user_id)
     profile = user.userprofile
     template = 'accounts/bio.html'
     context = {'user': user,
