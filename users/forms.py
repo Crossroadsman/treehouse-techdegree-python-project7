@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (UserCreationForm,
-                                       UserChangeForm)
+                                       UserChangeForm,
+                                       ReadOnlyPasswordHashField)
 
 
 # The purpose of this class is to override the builtin version
@@ -37,7 +38,12 @@ class P7UserCreationForm(UserCreationForm):
 
 
 class P7UserChangeForm(UserChangeForm):
+    password = ReadOnlyPasswordHashField()
+    
     class Meta:
         fields = ("email", "password")
         model = get_user_model()
+
+    def clean_password(self):
+        return self.initial["password"]
 

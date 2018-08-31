@@ -11,6 +11,9 @@
         {{ user }}
       {% endif %}
     </h1>
+    <p>To change your password, click 
+       <a href="{% url 'password_change' %}">here</a> or customise your profile 
+       using the form below</p>
     <div>
       <form method="POST">
         {% csrf_token %}
