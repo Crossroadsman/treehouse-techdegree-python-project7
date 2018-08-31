@@ -81,7 +81,7 @@ def edit_profile(request):
         up_instance = None
     if request.method == "POST":
         user_form = P7UserChangeForm(request.POST, instance=user)
-        profile_form = UserProfileForm(request.POST, instance=up_instance)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=up_instance)
         if all([user_form.is_valid(),
                 profile_form.is_valid()]):
             user_form.save()
