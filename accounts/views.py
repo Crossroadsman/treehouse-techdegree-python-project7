@@ -1,10 +1,12 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import (authenticate, login, logout, get_user_model,
+                                 update_session_auth_hash)
 from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 
-from users.forms import P7UserCreationForm, P7UserChangeForm
+from users.forms import (P7UserCreationForm, P7UserChangeForm,
+                         PasswordChangeForm)
 from accounts.models import UserProfile
 from accounts.forms import UserProfileForm
 
@@ -101,11 +103,25 @@ def edit_profile(request, user_id):
     return render(request, template, context)
         
 
-
 def bio(request, user_id):
     user = get_object_or_404(get_user_model(), pk=user_id)
     profile = user.userprofile
     template = 'accounts/bio.html'
     context = {'user': user,
                'profile': profile}
+    return render(request, template, context)
+
+
+def change_password(request):
+    user = request.user
+    form = PasswordChangeForm(user)
+    if request.method == "POST":
+        form = PasswordChangeForm(user, request.POST)
+        if form.is_valid():
+            u = form.save()
+            update_session_auth_hash(request, u)
+            messages.success(request, "Password successfully changed")
+            return redirect(reverse('accounts:profile', kwargs={'user_id': user.pk}))
+    template = 'accounts/change_password.html'
+    context = {'form': form}
     return render(request, template, context)

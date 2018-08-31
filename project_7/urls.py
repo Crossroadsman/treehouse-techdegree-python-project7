@@ -41,13 +41,5 @@ urlpatterns = [
             auth_views.PasswordResetCompleteView.as_view(),
             name="password_reset_complete"),  # `password_reset_complete.html`
 
-    # Django's built-in password-reset views
-    re_path(r'account/password-change$',
-            auth_views.PasswordChangeView.as_view(),
-            name="password_change"),
-    re_path(r'account/password-change/done$',
-            auth_views.PasswordChangeDoneView.as_view(),
-            name="password_change_done"),
-
 ]
 urlpatterns += staticfiles_urlpatterns()
