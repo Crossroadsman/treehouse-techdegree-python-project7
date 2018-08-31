@@ -130,7 +130,7 @@ class PasswordChangeForm(forms.Form):
     }
 
     old_password = forms.CharField(
-        label="Old Password",
+        label="Current Password",
         strip=False,
         widget=forms.PasswordInput(attrs={'autofocus': True})
     )
@@ -141,7 +141,7 @@ class PasswordChangeForm(forms.Form):
         help_text=password_validation.password_validators_help_text_html()
     )
     new_password2 = forms.CharField(
-        label="Confirm New Password",
+        label="Confirm Password",
         strip=False,
         widget=forms.PasswordInput()
     )

@@ -21,7 +21,7 @@ urlpatterns = [
             name='bio'),
 
     # Custom password-change view
-    re_path(r'change-password$',
+    re_path(r'profile/change-password$',
             views.change_password,
             name='change_password'),
 ]
