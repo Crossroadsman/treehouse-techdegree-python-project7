@@ -59,6 +59,32 @@ class P7UserChangeForm(UserChangeForm):
 # Begin Password Validation
 # -------------------------
 # Custom Validators
+class OtherIdentityAttributesValidator(object):
+    """Check that password doesn't contain any other identity components of
+    the user (username [here email], first name or last name)
+    """
+    error_msg = {
+        'code': 'other_identity_component',
+        'message': ("You may not include your username, first name or last "
+                    "name in your password")
+    }
+
+    def validate(self, password, user=None):
+        forbidden_words = []
+        if user:
+            forbidden_words.append(user.email.lower())
+            if hasattr(user, 'userprofile'):
+                forbidden_words.append(user.userprofile.given_name.lower())
+                forbidden_words.append(user.userprofile.family_name.lower())
+
+        for word in forbidden_words:
+            if word in password.lower():
+                raise ValidationError(self.error_msg['message'], self.error_msg['code'])
+
+    def get_help_text(self):
+        return self.error_msg['message']
+
+
 class ContentsValidator(object):
     """Check that the password contains the specified characters"""
     error_msg = {

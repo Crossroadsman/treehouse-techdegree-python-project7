@@ -106,6 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'users.forms.SpecialCharacterValidator',
     },
+    {
+        'NAME': 'users.forms.OtherIdentityAttributesValidator',
+    }
 ]
 
 

@@ -4,6 +4,16 @@ from .models import UserProfile
 
 
 class UserProfileForm(forms.ModelForm):
+
+    # Note that method declarations for cleaning must come before the
+    # Meta class declaration.
+    def clean_bio(self):
+        bio = self.cleaned_data.get('bio')
+        if len(bio) < 10:
+            raise forms.ValidationError("Bio must be at least 10 characters")
+        return bio
+
+
     class Meta:
         model = UserProfile
         fields = ("date_of_birth",
@@ -18,4 +28,5 @@ class UserProfileForm(forms.ModelForm):
                   "hobby",
                   "favourite_fountain_pen",
                   )
+        
 
