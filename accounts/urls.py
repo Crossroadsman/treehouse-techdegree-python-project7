@@ -10,13 +10,13 @@ urlpatterns = [
     re_path(r'sign_out/$', views.sign_out, name='sign_out'),
 
     # Profile-related views
-    re_path(r'(?P<user_id>\d+)/profile$',
+    re_path(r'profile$',
             views.profile,
             name='profile'),
-    re_path(r'(?P<user_id>\d+)/profile/edit',
+    re_path(r'profile/edit',
             views.edit_profile,
             name='edit_profile'),
-    re_path(r'(?P<user_id>\d+)/bio',
+    re_path(r'bio',
             views.bio,
             name='bio'),
 
