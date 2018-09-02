@@ -136,6 +136,9 @@ STATICFILES_DIRS = [
 
 # Media files (user images, etc)
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-MEDIA_ROOT
+#
+# MEDIA_ROOT is the filepath on disk
+# MEDIA_URL is the url path
 MEDIA_ROOT = os.path.join(
     BASE_DIR,
     'public',

@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load static %}
 
 {% block title %}Profile | {{ super }}{% endblock %}
 
@@ -28,7 +29,12 @@
           </tr>
           <tr>
             <td>Avatar:</td>
-            <td>{{ profile.avatar }}</td>
+            <td>
+              <!-- find way to programatically build the whole path -->
+              <a href="/public/media/{{ profile.avatar }}">
+                <img src="/public/media/{{ profile.avatar }}" width=200>
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>
