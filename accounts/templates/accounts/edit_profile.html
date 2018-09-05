@@ -13,7 +13,11 @@
   <script src="{% static 'js/thirdparty/jquery-ui.js' %}"></script>  
   <script>
     $( function() {
-      $( '#id_date_of_birth').datepicker();
+      $( '#id_date_of_birth').datepicker({
+        yearRange: "1905:-13",
+        changeMonth: true,
+        changeYear: true
+      });
     } );
   </script>
 {% endblock %}
