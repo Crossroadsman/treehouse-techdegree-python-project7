@@ -3,9 +3,12 @@
 
 {% block title %}Edit Profile | {{ super }}{% endblock %}
 {% block custom_css %}
+  <!-- this CSS is used to style the datepicker -->
   <link rel="stylesheet" href="{% static 'css/thirdparty/jquery-ui/jquery-ui.css' %}">
 {% endblock %}
 {% block custom_js_head %}
+  <!-- The following loads jQuery (required for jQuery-UI) then jQuery-UI
+       which is used for the datepicker -->
   <script src="{% static 'js/thirdparty/jquery-3.3.1.js' %}"></script>  
   <script src="{% static 'js/thirdparty/jquery-ui.js' %}"></script>  
   <script>
