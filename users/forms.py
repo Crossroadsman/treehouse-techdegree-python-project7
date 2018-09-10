@@ -46,14 +46,26 @@ class P7UserCreationForm(UserCreationForm):
 
 
 class P7UserChangeForm(UserChangeForm):
-    password = ReadOnlyPasswordHashField()
-    
+    password = ReadOnlyPasswordHashField(widget=forms.HiddenInput())
+    confirm_email = forms.EmailField(label="Confirm Email")
+
     class Meta:
         fields = ("email", "password")
         model = get_user_model()
+    
+    def __init__(self, *args, **kwargs):
+        self.field_order = ['email', 'confirm_email']
+        super().__init__(*args, **kwargs)
 
     def clean_password(self):
         return self.initial["password"]
+    
+    def clean_confirm_email(self):
+        email1 = self.cleaned_data.get('email')
+        email2 = self.cleaned_data.get('confirm_email')
+        if email1 != email2:
+            raise forms.ValidationError("Emails don't match")
+        return email1
 
 
 # Begin Password Validation
