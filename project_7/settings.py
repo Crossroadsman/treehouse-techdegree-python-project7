@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
     'users',
     'accounts',
 ]
@@ -133,6 +134,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # this is where collectstatic will put files
 
 # Media files (user images, etc)
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-MEDIA_ROOT
@@ -171,3 +173,11 @@ AUTH_USER_MODEL = 'users.P7User'
 
 # Default is to go to `accounts/profile`
 LOGIN_REDIRECT_URL = reverse_lazy('home')
+
+# Need for CKEditor
+# (https://github.com/django-ckeditor/django-ckeditor)
+# note the path below is the default one per the docs, but when used the
+# form field does not render. However, by omitting the path, ckeditor is
+# able to find the necessary assets and the form renders and behaves as
+# expected.
+# CKEDITOR_BASEPATH = 'static/ckeditor/ckeditor/'

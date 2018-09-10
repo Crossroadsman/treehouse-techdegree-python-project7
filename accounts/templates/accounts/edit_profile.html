@@ -37,6 +37,7 @@
     <div>
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ profile_form.media }}
         {{ user_form.as_p }}
         {{ profile_form.as_p }}
         <input type="submit" class="button-primary" value="Save">

@@ -5,6 +5,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+from ckeditor.fields import RichTextField
 
 def user_avatar_path(instance, filename):
     """See django.db.models.FileField in the django docs
@@ -23,7 +24,7 @@ class UserProfile(models.Model):
     )
 
     date_of_birth = models.DateField()
-    bio = models.TextField()
+    bio = RichTextField()
 
     # Optional Fields:
     given_name = models.CharField(max_length=255,

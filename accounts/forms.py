@@ -1,4 +1,5 @@
 from django import forms
+from ckeditor.widgets import CKEditorWidget
 
 from .models import UserProfile
 
@@ -13,6 +14,7 @@ class UserProfileForm(forms.ModelForm):
                          '%m/%d/%Y',      # '10/25/2006'
                          '%d/%m/%y']      # '25/10/06'
     )
+    # bio = forms.CharField(widget=CKEditorWidget())
 
     # Note that method declarations for cleaning must come before the
     # Meta class declaration.
@@ -26,10 +28,10 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ("date_of_birth",
-                  "bio",
                   "given_name",
                   "family_name",
                   "avatar",
+                  "bio",
                   "city",
                   "state",
                   "country",
