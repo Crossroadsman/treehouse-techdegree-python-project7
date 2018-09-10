@@ -16,30 +16,55 @@
       <table>
         <tbody>
           <tr>
-            <td>First Name:</td>
-            <td>{{ profile.given_name }}</td>
-          </tr>
-          <tr>
-            <td>Last Name:</td>
-            <td>{{ profile.family_name }}</td>
-          </tr>
-          <tr>
             <td>Email:</td>
             <td>{{ user.email }}</td>
           </tr>
-          <tr>
-            <td>Avatar:</td>
-            <td>
-              <a href="{{ profile.avatar.url }}">
-                <img src="{{ profile.avatar.url }}" width=200>
-              </a>
-            </td>
-          </tr>
           {% if user.userprofile %}
             <tr>
-              <td>Date of Birth</td>
-              <td>{{ user.userprofile.date_of_birth }}</td>
+              <td>First Name:</td>
+              <td>{{ profile.given_name }}</td>
             </tr>
+            <tr>
+              <td>Last Name:</td>
+              <td>{{ profile.family_name }}</td>
+            </tr>
+            <tr>
+              <td>Avatar:</td>
+              <td>
+                <a href="{{ profile.avatar.url }}">
+                  <img src="{{ profile.avatar.url }}" width=200>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Date of Birth</td>
+              <td>{{ profile.date_of_birth }}</td>
+            </tr>
+            <tr>
+              <td>City</td>
+              <td>{{ profile.city }}</td>
+            </tr>
+            <tr>
+              <td>State</td>
+              <td>{{ profile.state }}</td>
+            </tr>
+            <tr>
+              <td>Country</td>
+              <td>{{ profile.country }}</td>
+            </tr>
+            <tr>
+              <td>Favourite animal</td>
+              <td>{{ profile.favourite_animal }}</td>
+            </tr>
+            <tr>
+              <td>Hobby</td>
+              <td>{{ profile.hobby }}</td>
+            </tr>
+            <tr>
+              <td>Favourite fountain pen</td>
+              <td>{{ profile.favourite_fountain_pen }}</td>
+            </tr>
+
           {% endif %}
         </tbody>
       </table>
