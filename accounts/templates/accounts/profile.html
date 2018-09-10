@@ -35,6 +35,12 @@
               </a>
             </td>
           </tr>
+          {% if user.userprofile %}
+            <tr>
+              <td>Date of Birth</td>
+              <td>{{ user.userprofile.date_of_birth }}</td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
       <p>

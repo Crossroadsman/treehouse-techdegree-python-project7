@@ -80,7 +80,7 @@ def edit_profile(request):
     else:
         up_instance = None
     if request.method == "POST":
-        user_form = P7UserChangeForm(request.POST, instance=user)
+        user_form = P7UserChangeForm(request.POST, instance=user, initial={'confirm_email': user.email})
         profile_form = UserProfileForm(request.POST, request.FILES, instance=up_instance)
         if all([user_form.is_valid(),
                 profile_form.is_valid()]):
@@ -91,7 +91,7 @@ def edit_profile(request):
             return redirect(reverse('accounts:profile'))
     
     else:  # GET
-        user_form = P7UserChangeForm(instance=user)
+        user_form = P7UserChangeForm(instance=user, initial={'confirm_email': user.email})
         profile_form = UserProfileForm(instance=up_instance)
     
     template = 'accounts/edit_profile.html'
