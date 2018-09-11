@@ -5,6 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 
+from html_sanitizer import Sanitizer
+
 from users.forms import (P7UserCreationForm, P7UserChangeForm,
                          PasswordChangeForm)
 from accounts.models import UserProfile
@@ -87,6 +89,8 @@ def edit_profile(request):
             user_form.save()
             profile = profile_form.save(commit=False)
             profile.user = user
+            sanitizer = Sanitizer()
+            profile.bio = sanitizer.sanitize(profile.bio)
             profile.save()
             return redirect(reverse('accounts:profile'))
     

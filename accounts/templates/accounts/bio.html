@@ -12,7 +12,9 @@
         <tbody>
           <tr>
             <td>Bio:</td>
+            {% autoescape off %}
             <td>{{ profile.bio }}</td>
+            {% endautoescape %}
           </tr>
         </tbody>
       </table>
