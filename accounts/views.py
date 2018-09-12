@@ -126,3 +126,7 @@ def change_password(request):
     template = 'accounts/change_password.html'
     context = {'form': form}
     return render(request, template, context)
+
+def show_avatar(request):
+    template = 'accounts/avatar.html'
+    return render(request, template)

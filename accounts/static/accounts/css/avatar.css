@@ -1,0 +1,16 @@
+* {
+    box-sizing: border-box;
+}
+
+.wrapper-outer {
+    
+}
+
+.wrapper-inner {
+    width: 80%;
+    background-color: #111;
+    color: #eee;
+    margin: 0 auto;
+    padding: 25px;
+
+}

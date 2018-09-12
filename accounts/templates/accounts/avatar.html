@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block custom_css %}<link href="{% static 'accounts/css/avatar.css' %}" rel="stylesheet" type="text/css">{% endblock %}
+
+{% block body %}
+  <div class="wrapper-outer">
+    <div class="wrapper-inner">
+        <span id="point1">(X1, Y1)</span> <span id="point2">(X2, Y2)</span>
+        {% if user.userprofile %}
+          <img src="{{ user.userprofile.avatar.url }}" width=96%>
+        {% else %}
+          <button>+</button>
+        {% endif %}
+        <div class="editor-buttons">
+          <ul id="editor-top-buttons">
+            <button>CROP</button>
+            <button>ROT LEFT</button>
+            <button>ROT RIGHT</button>
+          </ul>
+          <ul id="editor-bottom-buttons">
+            <button>ACCEPT</button>
+            <button>CANCEL</button>
+            <button>SAVE</button>
+          </ul>
+        </div>
+    </div>
+  </div>
+  
+{% endblock body %}
