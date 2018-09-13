@@ -23,20 +23,39 @@ from image_editor.forms import AvatarEditForm
 def edit_avatar(request):
     form = AvatarEditForm()
     if request.method == 'POST':
+        if 'cancel' in request.POST:
+            return redirect(reverse('accounts:profile'))
+
         form = AvatarEditForm(request.POST)
         if form.is_valid():
             cleaned_data = form.cleaned_data
             print("image url: {}".format(cleaned_data['temp_image']))
             print("pos 1: ({}, {})".format(cleaned_data['x1'], cleaned_data['y1']))
             print("pos 2: ({}, {})".format(cleaned_data['x2'], cleaned_data['y2']))
-            print("crop?: {}".format(cleaned_data['crop']))
-            print("rotate left?: {}".format(cleaned_data['rotate_left']))
-            print("rotate right?: {}".format(cleaned_data['rotate_right']))
-            print("flip horizontal?: {}".format(cleaned_data['flip_horizontal']))
-            print("flip vertical?: {}".format(cleaned_data['flip_vertical']))
-            print("save? {}".format(cleaned_data['save']))
-            print("cancel? {}".format(cleaned_data['cancel']))
-            return redirect(reverse('accounts:profile'))
+            if 'save' in request.POST:
+                # set the avatar to be the temp image
+                return redirect(reverse('accounts:profile'))
+            
+            if 'crop' in request.POST:
+                # do the crop operation
+                # then reload the page
+                print('crop')
+            elif 'rotate-left' in request.POST:
+                # do the rotate operation
+                # then reload the page
+                print('RL')
+            elif 'rotate-right' in request.POST:
+                # do the rotate operation
+                # then reload the page
+                print('RR')
+            elif 'flip-horizontal' in request.POST:
+                # do the flip operation
+                # then reload the page
+                print('FH')
+            elif 'flip-vertical' in request.POST:
+                # do the flip operation
+                # then reload the page
+                print('FV')
     context = {'form': form}
     template = 'image_editor/avatar.html'
     return render(request, template, context)

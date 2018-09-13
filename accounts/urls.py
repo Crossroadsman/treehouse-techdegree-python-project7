@@ -19,9 +19,6 @@ urlpatterns = [
     re_path(r'bio',
             views.bio,
             name='bio'),
-    re_path(r'avatar',
-            views.show_avatar,
-            name='show_avatar'),
 
     # Custom password-change view
     re_path(r'profile/change-password$',
