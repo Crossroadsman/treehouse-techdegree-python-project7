@@ -35,6 +35,13 @@
        <a href="{% url 'accounts:change_password' %}">here</a> or customise your profile 
        using the form below</p>
     <div>
+      {% if user.avatar %}
+        <a href="{% url 'avatar:show_avatar' %}"><img src="{{ user.avatar.avatar.url }}" width=200></a>
+      {% else %}
+        <a href="{% url 'avatar:show_avatar' %}">Add an avatar</a>
+      {% endif %}
+    </div>
+    <div>
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ profile_form.media }}

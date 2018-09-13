@@ -19,6 +19,16 @@
             <td>Email:</td>
             <td>{{ user.email }}</td>
           </tr>
+          {% if user.avatar %}
+           <tr>
+            <td>Avatar:</td>
+            <td>
+              <a href="{{ user.avatar.avatar.url }}">
+                <img src="{{ user.avatar.avatar.url }}" width=200>
+              </a>
+            </td>
+            </tr>
+          {% endif %}            
           {% if user.userprofile %}
             <tr>
               <td>First Name:</td>
@@ -27,14 +37,6 @@
             <tr>
               <td>Last Name:</td>
               <td>{{ profile.family_name }}</td>
-            </tr>
-            <tr>
-              <td>Avatar:</td>
-              <td>
-                <a href="{{ profile.avatar.url }}">
-                  <img src="{{ profile.avatar.url }}" width=200>
-                </a>
-              </td>
             </tr>
             <tr>
               <td>Date of Birth</td>

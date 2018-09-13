@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 from ckeditor.fields import RichTextField
 
+
 def user_avatar_path(instance, filename):
     """See django.db.models.FileField in the django docs
     
@@ -16,6 +17,39 @@ def user_avatar_path(instance, filename):
     username = instance.user_id
     _, ext = os.path.splitext(filename)
     return 'avatars/{}{}'.format(username, ext)
+
+
+class Avatar(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE
+    )
+
+    avatar = models.ImageField(
+        upload_to=user_avatar_path,
+        blank=True,
+        null=True
+    )
+
+    # Every time an edit is made, the temp is updated. Once the user confirms
+    # saving the edited image as an avatar, the avatar attribute is set to
+    # the temp image and the temp image is cleared out.
+    temp = models.ImageField(
+        upload_to=user_avatar_path,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        if self.avatar:
+            return "{} ({})".format(self.avatar, self.user.email)
+        if self.temp:
+            return "{} ({})".format(self.temp, self.user.email)
+        return "None {}".format(self.user.email)
+
+    def get_absolute_url(self):
+        # TODO
+        return reverse('accounts:profile', 
+                       kwargs={'user_id': self.user_id,})
 
 
 class UserProfile(models.Model):
@@ -33,12 +67,6 @@ class UserProfile(models.Model):
     family_name = models.CharField(max_length=255,
                                   blank=True,
                                   default='')
-
-    avatar = models.ImageField(
-        upload_to=user_avatar_path,
-        blank=True,
-        null=True
-    )
 
     city = models.CharField(
         max_length=255,

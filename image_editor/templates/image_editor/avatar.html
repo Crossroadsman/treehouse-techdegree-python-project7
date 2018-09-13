@@ -1,14 +1,14 @@
 {% extends 'layout.html' %}
 {% load static %}
 
-{% block custom_css %}<link href="{% static 'accounts/css/avatar.css' %}" rel="stylesheet" type="text/css">{% endblock %}
+{% block custom_css %}<link href="{% static 'image_editor/css/avatar.css' %}" rel="stylesheet" type="text/css">{% endblock %}
 
 {% block body %}
   <div class="wrapper-outer">
     <div class="wrapper-inner">
         <span id="point1">(X1, Y1)</span> <span id="point2">(X2, Y2)</span>
         {% if user.userprofile %}
-          <img src="{{ user.userprofile.avatar.url }}" width=96%>
+          <img src="{{ user.avatar.avatar.url }}" width=96%>
         {% else %}
           <button>+</button>
         {% endif %}

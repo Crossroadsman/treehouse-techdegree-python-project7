@@ -25,6 +25,7 @@ from . import views
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^accounts/', include('accounts.urls', namespace='accounts')),
+    re_path(r'^avatar/', include('image_editor.urls', namespace='image_editor')),
     #re_path(r'^accounts/', include('django.contrib.auth.urls')),
     re_path(r'^$', views.home, name='home'),
 

@@ -24,13 +24,11 @@ class UserProfileForm(forms.ModelForm):
             raise forms.ValidationError("Bio must be at least 10 characters")
         return bio
 
-
     class Meta:
         model = UserProfile
         fields = ("date_of_birth",
                   "given_name",
                   "family_name",
-                  "avatar",
                   "bio",
                   "city",
                   "state",
