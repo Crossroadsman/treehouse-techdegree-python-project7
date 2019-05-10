@@ -1,5 +1,16 @@
 // elements
-const passwordField = document.getElementById("id_password1")
+const password1Field = document.getElementById("id_password1"); 
+const newPasswordField = document.getElementById("id_new_password1");
+let passwordField;
+
+if (password1Field) {
+  passwordField = password1Field;
+} else if (newPasswordField) {
+  passwordField = newPasswordField;
+} else {
+  console.log("No valid password field found!");
+}
+
 const strengthMeter = document.getElementById("strength-meter")
 const meterBody = document.getElementById("meter-body")
 
