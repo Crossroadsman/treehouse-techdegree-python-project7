@@ -30,7 +30,6 @@ class UserProfileForm(forms.ModelForm):
         fields = ("date_of_birth",
                   "given_name",
                   "family_name",
-                  "avatar",
                   "bio",
                   "city",
                   "state",

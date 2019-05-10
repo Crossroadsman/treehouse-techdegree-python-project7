@@ -31,7 +31,15 @@
     <p>To change your password, click 
        <a href="{% url 'accounts:change_password' %}">here</a> or customise your profile 
        using the form below</p>
-    <div>
+    <h3>Avatar:</h3>
+    {% if user.userprofile.avatar %}
+      <p><img src="{{ user.userprofile.avatar.url }}" alt="edit avatar" width="200"></p>
+      <p><a href="{% url 'image_edit:cropper' %}">Replace</a></p>
+    {% else %}
+      <a href="{% url 'image_edit:cropper' %}">Upload an avatar.</a>
+    {% endif %}
+    
+     <div>
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ profile_form.media }}
@@ -39,6 +47,7 @@
         {{ profile_form.as_p }}
         <input type="submit" class="button-primary" value="Save">
       </form>
+
     </div>
   </div>
 {% endblock %}
