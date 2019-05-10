@@ -11,7 +11,7 @@ from django.db import models
 
 class P7UserManager(BaseUserManager):
     def create_user(self, email, password=None):
-        """Creates and saves a user woth the specified email and password"""
+        """Creates and saves a user with the specified email and password"""
         if not email:
             raise ValueError("Users must provide an email address")
 
