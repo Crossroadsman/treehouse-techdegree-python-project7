@@ -26,6 +26,7 @@ urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^accounts/', include('accounts.urls', namespace='accounts')),
     #re_path(r'^accounts/', include('django.contrib.auth.urls')),
+    re_path(r'^avatar/', include('image_edit.urls', namespace='image_edit')),
     re_path(r'^$', views.home, name='home'),
 
     # Django's built-in password-reset views
