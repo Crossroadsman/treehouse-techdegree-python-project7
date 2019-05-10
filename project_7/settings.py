@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'users',
     'accounts',
+    'image_edit.apps.ImageEditConfig',
 ]
 
 MIDDLEWARE = [
@@ -181,3 +182,19 @@ LOGIN_REDIRECT_URL = reverse_lazy('home')
 # able to find the necessary assets and the form renders and behaves as
 # expected.
 # CKEDITOR_BASEPATH = 'static/ckeditor/ckeditor/'
+
+
+# AJAX and CSRF
+# See:
+# https://docs.djangoproject.com/en/2.2/ref/csrf/#ajax
+# Step 1 - Get CSRF token:
+# - if CSRF_USE_SESSIONS is False (default) and CSRF_COOKIE_HTTPONLY is False
+#   (default):
+#   - get the csrftoken cookie in the JS
+# Step 2 - Use the token in the AJAX request:
+#   - If using jQuery, see the example code at https://docs.djangoproject.com/en/2.2/ref/csrf/#setting-the-token-on-the-ajax-request
+
+
+# MAXIMUM UPLOAD SIZE
+# (Default is 2.5MB expressed as bytes: 2621440)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
