@@ -1,0 +1,385 @@
+{% load static %} {# same syntax as https://github.com/django/djangoproject.com/blob/master/djangoproject/templates/base.html #}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <!-- the following viewport meta is expected by Bootstrap-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Image Editor (Cropper.JS)</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Cropper CSS -->
+    <link rel="stylesheet" href="{% static 'cropper/vendor/cropperjs/cropper.css' %}">
+  </head>
+
+  <!-- note that it is valid to use bootstrap styling outside of the container -->
+  <body class="bg-dark">
+    <!-- create the Bootstrap container (responsive fixed-width mode) -->
+    <div class="container">
+      
+      <!-- tell Bootstrap to center-align the content. -->
+      <div id="image-editor" class="text-center">
+        
+        <!-- rows are wrappers for columns. Only columns may be immediate children of rows -->
+        <div class="row">
+          
+          <!-- the id is being used for functionality, 
+               the column classes for Bootstrap 
+               - columns without a specified width will layout as equal-width columns
+               - grid breakpoints are based on minimum width media queries (i.e., apply to that breakpoint
+                 and everything larger)
+               - size classes are:
+                 - xs: < 576px (logical pixels) (phones in portrait)
+                 - sm: < 768px (phones landscape)
+                 - md: < 992px (tablets)
+                 - lg: < 1200px (laptops)
+                 - xl: >=1200px (desktops, etc)
+          -->
+          <div id="image-editor-image" class="col">
+            <div id="upload-image">
+              <!-- hidden form -->
+              <form enctype="multipart/form-data" id="upload-form" method="POST" action="upload_image">
+                {% csrf_token %}
+                <label id="upload-image-label" class="label" data-toggle="tooltip" title="Upload an Image">
+                  <img id="image" src="{% static 'cropper/icons/upload.png' %}" class="img-fluid" style="max-width: 100%;">  
+                  <input type="file" class="sr-only" id="input" name="image" accepts="image/*">
+                </label>
+              </form>
+              <!-- Tell Bootstrap to hide the paragraph (display:none) on XS and larger (i.e., all devices) then override that for SM and larger to show the element again. Need to do this way because Bootstrap settings apply to a particular size class and above -->
+              <span id="chooseText" class="d-none d-sm-block p-sm-2 text-light" style="font-family: 'Courier New', Courier, monospace">Choose File</span>
+            </div>
+
+          </div><!-- end #image-editor-image-->
+        </div> <!-- end .row -->
+
+        <div class="row fixed-bottom">
+            <!-- Here we are creating two columns that will be side by side from size small and above, but
+            will be stacked at less than size small (i.e., should be stacked on portrait phones but
+            side-by-side on anything larger. 
+
+            We specify px-0 to override the horizontal padding and set to 0
+            -->
+            <div id="image-editor-buttons-row1" class="col-sm px-0">
+                  <button type="button" id="editor-crop" class="btn px-0"><img src="{% static 'cropper/icons/crop.png' %}" class="img-fluid"></button>
+                  <button type="button" id="editor-rotate-left" class="btn px-0"><img src="{% static 'cropper/icons/rotate_left.png' %}"></button>
+                  <button type="button" id="editor-rotate-right" class="btn px-0"><img src="{% static 'cropper/icons/rotate_right.png' %}"></button>
+            </div>
+            <div id="image-editor-buttons-row2" class="col-sm px-0">
+              <button type="button" id="editor-flip" class="btn px-0"><img src="{% static 'cropper/icons/flip.png' %}"></button>
+              <button type="button" id="editor-accept" class="btn px-0"><img src="{% static 'cropper/icons/accept.png' %}"></button>
+              <button type="button" id="editor-cancel" class="btn px-0"><img src="{% static 'cropper/icons/cancel.png' %}"></button>
+            </div>
+        </div>
+      </div><!-- end #image-editor-->
+
+    </div> <!-- end .container -->
+
+
+
+    <!-- JS. Note that most Bootstrap components require jQuery and Popper.js, 
+    in addition to Bootstrap's own JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- cropper.js -->
+    <script src="{% static 'cropper/vendor/cropperjs/cropper.js' %}"></script>
+
+    <!-- Enable CSRF -->
+    <script src="{% static 'cropper/js/csrf.js' %}"></script>
+
+    <script>
+      window.onload = function () {
+
+        // elements
+        var editorDiv = document.getElementById('image-editor-image');
+        var uploadDiv = document.getElementById('upload-image');
+        var input = document.getElementById('input');
+        var image = document.getElementById('image');
+        var uploadForm = document.getElementById('upload-form');
+
+        var cropButton = document.getElementById('editor-crop');
+        var rotateLeftButton = document.getElementById('editor-rotate-left');
+        var rotateRightButton = document.getElementById('editor-rotate-right');
+        var flipButton = document.getElementById('editor-flip');
+        var acceptButton = document.getElementById('editor-accept');
+
+        // other variables
+        var cropper;  // will be instantiated by one of the buttons
+
+        // event listeners
+        input.addEventListener('change', function (e) {
+          imageFromFile(e.target);
+        });
+
+        cropButton.addEventListener('click', function () {
+          if (!imageUploaded()) {
+            // early exit if no image has been uploaded yet
+            return;
+          }
+
+          if (cropper) {
+            return;
+          } else {
+            cropper = new Cropper(image, {autoCropArea: 0.5});
+          }
+        });
+
+        rotateLeftButton.addEventListener('click', function () {
+          if (!imageUploaded()) {
+            // early exit if no image has been uploaded yet
+            return;
+          }
+          // check if a cropper instance already exists (created by crop button). If so, work with that instance, if not create a new cropper instance, work with that, then destroy it at the end.
+          if (cropper) {
+            rotate(false);
+
+          } else {
+            cropper = new Cropper (image, {
+              autoCropArea: 1,
+              ready: function () {
+                rotate(false);
+              }
+            });
+          }
+        });
+
+        rotateRightButton.addEventListener('click', function () {
+          if (!imageUploaded()) {
+            // early exit if no image has been uploaded yet
+            return;
+          }
+          // check if a cropper instance already exists (created by crop button). If so, work with that instance, if not create a new cropper instance, work with that, then destroy it at the end.
+          if (cropper) {
+            rotate();
+
+          } else {
+            cropper = new Cropper (image, {
+              autoCropArea: 1,
+              ready: function () {
+                rotate();
+              }
+            });
+          }
+        });
+
+        flipButton.addEventListener('click', function () {
+          
+          if (!imageUploaded()) {
+            // early exit if no image has been uploaded yet
+            return;
+          }
+          // check if a cropper instance already exists (created by crop button). If so, work with that instance, if not create a new cropper instance, work with that, then destroy it at the end.
+          if (cropper) {
+            flipHorizontal();
+
+          } else {
+            cropper = new Cropper (image, {
+              viewMode: 0,
+              autoCropArea: 1,
+              ready: function () {
+                flipHorizontal();
+              }
+            });
+          }
+        });
+
+
+        acceptButton.addEventListener('click', function() {
+          if (!imageUploaded()) {
+            // early exit if no image has been uploaded yet
+            return;
+          }
+
+          if (!cropper) {
+            // send the image in the #image element
+            input.disabled = false;
+            uploadForm.submit()
+            return;
+          }
+
+          // send the cropped portion of the cropper object.
+          console.log("cropper active, cropping and sending to server");
+
+          canvas = cropper.getCroppedCanvas();
+          console.log("canvas: ", canvas);
+          canvas.toBlob((blob) => {
+            var formData = new FormData();
+            formData.append('image', blob);
+
+            $.ajax('upload_image', {
+              method: "POST",
+              data: formData,
+              processData: false,
+              contentType: false,
+              success(data) {
+                console.log(data.message);
+                window.location = data.url;
+              },
+              error(data) {
+                console.log(data.message);
+                window.location = data.url;
+              },
+            });
+          });
+          
+
+        });
+
+        // Cropper Transformation Functions
+        function rotate(clockwise=true) {
+          if (!cropper) {
+            console.log("Cropper needs to be instantiated");
+            return;
+          }
+          console.log("Performing rotate transformation")
+
+          // Get dimensions
+          var imageData = getImageData();
+          var currentDimensions = getCurrentDimensions();
+
+          console.log("imageData: ", imageData);
+          console.log("currentDimensions: ", currentDimensions);
+          var angle = 90;
+          if (!clockwise) {
+            angle = -90;
+          }
+
+          var scaleX = imageData.scaleX * (1 / currentDimensions.aspect);
+          var scaleY = imageData.scaleY * (1 / currentDimensions.aspect);
+          cropper.rotate(angle).scale(scaleX, scaleY);
+
+          const canvasData = cropper.getCanvasData();
+          cropper.setCropBoxData({
+            "left": canvasData.left,
+            "top": canvasData.top,
+            "width": canvasData.width,
+            "height": canvasData.height
+          });
+        }
+
+        function flipHorizontal() {
+          var imageData = getImageData();
+          
+          var flipX;
+          var flipY;
+          switch (imageData.rotate) {
+            case 0:
+            case 180:
+            case -180:
+              flipX = -1;
+              flipY = 1;
+              break;
+            case 90:
+            case -90:
+            case 270:
+            case -270:
+              flipX = 1;
+              flipY = -1;
+              break;
+            default:
+              console.log("Invalid rotate value")
+          }
+
+          var scaleX = imageData.scaleX * flipX;
+          var scaleY = imageData.scaleY * flipY;
+
+          cropper.scale(scaleX, scaleY);
+        }
+
+
+        // Other Functions
+        function getImageData() {
+          // the imageData object returned by Cropper's getImageData() method
+          // does not include values for rotation and scale for PNGs (at least
+          // prior to the first rotate or scale action)
+          let imageData = cropper.getImageData()
+          if (!imageData.hasOwnProperty('rotate')) {
+            imageData.rotate = 0;
+          }
+          if (!imageData.hasOwnProperty('scaleX')) {
+            imageData.scaleX = 1;
+          }
+          if (!imageData.hasOwnProperty('scaleY')) {
+            imageData.scaleY = 1;
+          }
+          return imageData;
+          
+        }
+        function getCurrentDimensions() {
+          // Cropper always describes height and width according to the
+          // original orientation. However, we often want to work with the
+          // current dimensions
+          if (!cropper) {
+            console.log("Cropper needs to be instantiated");
+            return;
+          }
+
+          // Query Cropper for dimensions
+          var imageData = getImageData();
+
+          // Compute current dimensions
+          switch (imageData.rotate) {
+            case 0:
+            case 180:
+            case -180:
+              currentWidth = imageData.width;
+              currentHeight = imageData.height;
+              break;
+            case 90:
+            case -90:
+            case 270:
+            case -270:
+              currentWidth = imageData.height;
+              currentHeight = imageData.width;
+              break;
+            default:
+              console.log("Invalid imageData.rotate value");
+          }
+          var currentAspect = currentWidth / currentHeight
+
+          return {
+            width: currentWidth,
+            height: currentHeight,
+            aspect: currentAspect
+          }
+        }
+
+        function imageFromFile(input_element) {
+          // check that a file has been selected
+          if (input_element.files && input_element.files[0]) {
+
+            // create a FileReader object to work with the file
+            var reader = new FileReader();
+
+            // tell the FileReader what to do when the file is loaded
+            reader.onload = function (e) {
+
+              createImageTag(e.target.result);
+            }
+            reader.readAsDataURL(input_element.files[0])
+
+          }
+        }
+
+        function createImageTag(imageData) {
+          //image = document.createElement('img');
+          image.setAttribute('src', imageData);
+          image.style = 'max-width: 100%;'
+          image.className += " uploaded-true"
+          //editorDiv.removeChild(uploadDiv);
+          //editorDiv.appendChild(image);
+          input.disabled = true;
+
+        }
+
+        function imageUploaded() {
+          return image.className.includes('uploaded-true');
+        }
+
+
+
+      };
+    </script>
+  </body>
+</html>
