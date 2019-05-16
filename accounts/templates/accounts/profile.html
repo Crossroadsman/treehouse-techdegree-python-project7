@@ -30,11 +30,15 @@
             </tr>
             <tr>
               <td>Avatar:</td>
-              <td>
-                <a href="{{ profile.avatar.url }}">
+              {% if profile.avatar %}
+                <td>
                   <img src="{{ profile.avatar.url }}" width=200>
-                </a>
-              </td>
+                </td>
+              {% else %}
+                <td>
+                  None
+                </td>
+              {% endif %}
             </tr>
             <tr>
               <td>Date of Birth</td>
