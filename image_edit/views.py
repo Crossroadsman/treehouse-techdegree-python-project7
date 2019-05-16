@@ -29,7 +29,6 @@ def upload_image(request):
         print("Image is in request.FILES")
 
         image_object = Image.open(image_file)
-        image_object.show()
 
         print("getting user:")
         user = get_object_or_404(get_user_model(), pk=request.user.pk)
