@@ -14,7 +14,6 @@ class UserProfileForm(forms.ModelForm):
                          '%m/%d/%Y',      # '10/25/2006'
                          '%d/%m/%y']      # '25/10/06'
     )
-    # bio = forms.CharField(widget=CKEditorWidget())
 
     # Note that method declarations for cleaning must come before the
     # Meta class declaration.
@@ -23,7 +22,6 @@ class UserProfileForm(forms.ModelForm):
         if len(bio) < 10:
             raise forms.ValidationError("Bio must be at least 10 characters")
         return bio
-
 
     class Meta:
         model = UserProfile
@@ -42,5 +40,3 @@ class UserProfileForm(forms.ModelForm):
             "given_name": "First name",
             "family_name": "Last name",
         }
-        
-

@@ -1,0 +1,8 @@
+[run]
+omit = 
+    # omit third-party code
+    venv/*
+
+    # omit generated code
+    */migrations/*
+

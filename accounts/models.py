@@ -7,10 +7,11 @@ from django.contrib.auth.models import User
 
 from ckeditor.fields import RichTextField
 
+
 def user_avatar_path(instance, filename):
     """See django.db.models.FileField in the django docs
     
-    `instance` is the object with the ImageField;
+    `instance` is the object with the ImageField (i.e, the user);
     `filename` is the file's original filename
     """
     username = instance.user_id
