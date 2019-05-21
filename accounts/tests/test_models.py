@@ -4,9 +4,8 @@ from unittest.mock import Mock
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
-from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 
 from accounts.models import user_avatar_path, UserProfile
 
@@ -23,14 +22,22 @@ class UserAvatarPathFunctionTest(TestCase):
         self.assertEqual(avatar_path, expected_output)
 
 
-class UserProfileModelTest(TestCase):
+# We use TransactionTestCase instead of the more common TestCase for the 
+# following test because the way that the test database rolls back when
+# using TestCase causes errors when trying to iterate through the invalid
+# UserProfiles. See more detailed description of the difference between
+# TestCase and TransactionTestCase at:
+# https://docs.djangoproject.com/en/1.11/topics/testing/tools/#transactiontestcase
+class UserProfileModelTest(TransactionTestCase):
+
 
     def setUp(self):
-        self.valid_user = User(email="test@test.com")
+        self.valid_user = User.objects.create(email="test@test.com")
         self.valid_dob = date(1977, 5, 25)
         self.valid_bio = "this is a string with more than 10 characters"
 
     def test_userprofile_without_required_fields_is_invalid(self):
+
         no_user_model = UserProfile(
             user=None,
             date_of_birth=self.valid_dob,
@@ -51,26 +58,30 @@ class UserProfileModelTest(TestCase):
 
         for model in [
             no_user_model,
+            no_dob_model,
+            no_bio_model,
         ]:
             with self.assertRaises(IntegrityError):
                 model.save()
 
-        for model in [
-            no_dob_model,
-            no_bio_model,
-        ]:
-            with self.assertRaises(ValidationError):
-                model.save()
+    def test_userprofile_is_related_to_user(self):
+        test_profile = UserProfile.objects.create(
+            user=self.valid_user,
+            date_of_birth=self.valid_dob,
+            bio=self.valid_bio
+        )
 
-                # Django's validation in save behaviour is counter-intuitive.
-                # Django will not try to enforce any constraints not supported
-                # by the DB. For example, SQLite doesn't support a constraint
-                # equivalent to 'blank=False' (the default for TextField 
-                # objects).
-                # We can force full validation by manually calling 
-                # Model.full_clean().
-                # Note this turns the constraint into an application level
-                # constraint so the violation is ValidationError whereas a
-                # true constraint violation on save is an IntegrityError
-                model.full_clean()
+        self.assertIs(test_profile, self.valid_user.userprofile)
+
+    # def test_userprofile_string_representation_is_name_andor_email(self):
+    #     """if an part of the name is available, e.g., 'Alice', the
+    #     representation should be the available name then email in parens,
+    #     e.g., 'Alice (alice@test.com)'. If no name, just email, e.g., 
+    #     'alice@test.com'
+    #     """
+    #     first_name_profile = UserProfile.objects.create(
+    #         user=self.valid_user
+    #     )
+
+
 
