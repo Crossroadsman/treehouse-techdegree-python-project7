@@ -13,7 +13,6 @@ from accounts.models import UserProfile
 from accounts.forms import UserProfileForm
 
 
-
 def sign_in(request):
     form = AuthenticationForm()
     if request.method == 'POST':
