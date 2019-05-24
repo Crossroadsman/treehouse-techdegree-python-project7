@@ -4,6 +4,7 @@ import unittest
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
+from django.template.loader import render_to_string
 from django.test import Client, RequestFactory, TestCase
 from django.urls import resolve, reverse
 
@@ -26,17 +27,6 @@ class AccountViewsTestCase(TestCase):
 
         self.client = Client()
 
-    # Helper Methods
-    # --------------
-    def create_userprofile(self, user):
-        userprofile = UserProfile.objects.create(
-            user=user,
-            date_of_birth=date(1977, 5, 25),
-            bio="this is a string with more than 10 characters"
-        )
-        return userprofile
-
-    
     # Test Methods
     # ------------
     def test_url_resolves_to_correct_view(self):
@@ -65,6 +55,7 @@ class AccountViewsTestCase(TestCase):
         
         self.assertTemplateUsed(response, self.template)
 
+### Move AccountViewsWithUserTestCase definition here later ###
 
 
 class SignInViewTest(AccountViewsTestCase):
@@ -104,113 +95,38 @@ class SignOutViewTest(AccountViewsTestCase):
     def test_view_renders_correct_template(self):
         pass
 
-
-class ProfileViewTest(AccountViewsTestCase):
+class AccountViewsWithUserTestCase(AccountViewsTestCase):
     
-    def setUp(self):
-        super().setUp()
-        self.abstract = False
-        self.name += 'profile'
-        self.template += 'profile.html'
-        self.url += 'profile'
-        self.target_view = profile
-
-        self.request_factory = RequestFactory()
-        self.user = User.objects.create(email="testuser@test.com")
-
-    def test_view_associated_with_correct_name(self):
-        self.userprofile = self.create_userprofile(self.user)
-
-        request = self.request_factory.get(reverse(self.name))
-        request.user = self.user
-        response = self.target_view(request)
-
-        self.assertEqual(response.status_code, self.status_code)
-
-    def test_view_renders_correct_template(self):
-        self.userprofile = self.create_userprofile(self.user)
-
-        request = self.request_factory.get(reverse(self.name))
-        request.user = self.user
-        response = self.target_view(request)
-
-        self.assertTemplateUsed(response, self.template)
-
-    def test_redirects_to_editprofile_if_no_userprofile(self):
-        redirect_target = '/accounts/edit_profile'
-
-        request = self.request_factory.get(reverse(self.name))
-        request.user = self.user
-        response = self.target_view(request)
-
-        self.assertRedirects(response, redirect_target)
-
-    def test_displays_correct_profile_data(self):
-        
-        # email -> already set
-        # dob -> already set
-        # bio -> already set
-        test_profile_data = {
-            'given_name': 'alice',
-            'family_name': 'smith',
-            'city': 'anytown',
-            'state': 'anystate',
-            'country': 'anycountry',
-            'favourite_animal': 'dog',
-            'hobby': 'dog snuggling',
-            'favourite_fountain_pen': 'pilot metropolitan'
-        }
-        self.userprofile = self.create_userprofile(self.user)
-        self.userprofile.given_name = test_profile_data['given_name']
-        self.userprofile.family_name = test_profile_data['family_name']
-        self.userprofile.city = test_profile_data['city']
-        self.userprofile.state = test_profile_data['state']
-        self.userprofile.country = test_profile_data['country']
-        self.userprofile.favourite_animal = test_profile_data['favourite_animal']
-        self.userprofile.hobby = test_profile_data['hobby']
-        self.userprofile.favourite_fountain_pen = test_profile_data['favourite_fountain_pen']
-        self.userprofile.save()
-
-        request = self.request_factory.get(reverse(self.name))
-        request.user = self.user
-        response = self.target_view(request)
-
-        # You can compare the raw bytes content and decoded content by
-        # uncommenting the folllowing code:
-        # print("==== RESPONSE ====")
-        # print("---- content (utf-8 encoded bytestring) ----")
-        # print(response.content)
-        # print("---- end content ----")
-        # print("---- content (decoded) ----")
-        # print(response.content.decode())
-        # print("---- end content ----")
-        # print("==== END RESPONSE ====")
-
-        # Django provides assertContains: like assertIn but automatically
-        # handles encoding/decoding between response.content bytestring
-        # and regular python strings (saving us from using the decode() method
-        # on the response.content bytestring)
-        for value in test_profile_data.values():
-            self.assertContains(response, value)
-
-
-class EditProfileViewTest(AccountViewsTestCase):
-    
-    # Setup and Teardown
+    # setup and teardown
     # ------------------
     def setUp(self):
         super().setUp()
-        self.abstract = False
-        self.name += 'edit_profile'
-        self.template += 'edit_profile.html'
-        self.url += 'profile/edit'
-        self.target_view = edit_profile
 
+        # To provide a user we need to build a custom request using
+        # RequestFactory
         self.request_factory = RequestFactory()
         self.user = User.objects.create(email="alicesmith@test.com")
+        # TODO: ACTUALLY, it looks like we can do this:
+        # self.user = User.objects.create(email="alicesmith@test.com")
+        # self.client.force_login(self.user)
+        # see:
+        # https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.Client.force_login
+
+        # Using ReqeustFactory instead of client, we can't use
+        # assertTemplateUsed. Therefore we'll check that we've rendered
+        # the correct template by testing the rendered <title> element
+        self.template_title = ''
 
     # Helper Methods
     # --------------
+    def create_userprofile(self, user):
+        userprofile = UserProfile.objects.create(
+            user=user,
+            date_of_birth=date(1977, 5, 25),
+            bio="this is a string with more than 10 characters"
+        )
+        return userprofile
+
     def create_optional_userprofile_data(self):
         """One a user is active and has a userprofile, populate the
         optional fields with some standardised test data
@@ -251,6 +167,13 @@ class EditProfileViewTest(AccountViewsTestCase):
         response = self.target_view(request)
         return response
 
+    def get_title_text(self, response):
+        decoded = response.content.decode()
+        start = decoded.find('<title>') + 7
+        end = decoded.find('</title>')
+        title = decoded[start:end]
+        return title
+
 
     # Test Methods
     # ------------
@@ -262,13 +185,87 @@ class EditProfileViewTest(AccountViewsTestCase):
         self.assertEqual(response.status_code, self.status_code)
 
     def test_view_renders_correct_template(self):
-        # for GET requests
         self.userprofile = self.create_userprofile(self.user)
 
         response = self.make_request_for_current_user()
 
-        self.assertTemplateUsed(response, self.template)
+        title = self.get_title_text(response)
+
+        self.assertEqual(self.template_title, title)
+
     
+class ProfileViewTest(AccountViewsWithUserTestCase):
+    
+    def setUp(self):
+        super().setUp()
+        self.abstract = False
+        self.name += 'profile'
+        self.template_title = 'Profile | '
+        self.url += 'profile'
+        self.target_view = profile
+
+    def test_redirects_to_editprofile_if_no_userprofile(self):
+        redirect_target = '/accounts/edit_profile'
+
+        response = self.make_request_for_current_user()
+        self.assertEqual(response.status_code, 302)
+
+        # DEBUG
+        print("==== RESPONSE ====")
+        print("---- status ----")
+        print(response.status_code)
+        print("---- end status ----")
+        print("---- content (utf-8 encoded bytestring) ----")
+        print(response.content)
+        print("---- end content ----")
+        print("---- content (decoded) ----")
+        print(response.content.decode())
+        print("---- end content ----")
+        print("==== END RESPONSE ====")
+
+        self.assertRedirects(response, redirect_target)
+
+    def test_displays_correct_profile_data(self):
+        
+        self.userprofile = self.create_userprofile(self.user)
+        test_profile_data = self.create_optional_userprofile_data()
+        
+
+        response = self.make_request_for_current_user()
+
+        # You can compare the raw bytes content and decoded content by
+        # uncommenting the folllowing code:
+        # print("==== RESPONSE ====")
+        # print("---- content (utf-8 encoded bytestring) ----")
+        # print(response.content)
+        # print("---- end content ----")
+        # print("---- content (decoded) ----")
+        # print(response.content.decode())
+        # print("---- end content ----")
+        # print("==== END RESPONSE ====")
+
+        # Django provides assertContains: like assertIn but automatically
+        # handles encoding/decoding between response.content bytestring
+        # and regular python strings (saving us from using the decode() method
+        # on the response.content bytestring)
+        for value in test_profile_data.values():
+            self.assertContains(response, value)
+
+
+class EditProfileViewTest(AccountViewsWithUserTestCase):
+    
+    # Setup and Teardown
+    # ------------------
+    def setUp(self):
+        super().setUp()
+        self.abstract = False
+        self.name += 'edit_profile'
+        self.template_title = 'Edit Profile | '
+        self.url += 'profile/edit'
+        self.target_view = edit_profile
+
+    # Test Methods
+    # ------------    
     def test_view_renders_correct_template_if_POST_invalid(self):
         # for POSTs with validation errors
         self.userprofile = self.create_userprofile(self.user)
@@ -283,7 +280,19 @@ class EditProfileViewTest(AccountViewsTestCase):
             data=test_postdata
         )
 
-        self.assertTemplateUsed(response, self.template)
+        # DEBUG
+        # print("==== RESPONSE (POST INVALID)====")
+        # print("---- content (utf-8 encoded bytestring) ----")
+        # print(response.content)
+        # print("---- end content ----")
+        # print("---- content (decoded) ----")
+        # print(response.content.decode())
+        # print("---- end content ----")
+        # print("==== END RESPONSE ====")
+
+        title = self.get_title_text(response)
+
+        self.assertEqual(self.template_title, title)
 
     def test_redirects_to_profile_if_valid_POST(self):
         # for valid POSTs
@@ -346,14 +355,14 @@ class EditProfileViewTest(AccountViewsTestCase):
         response = self.make_request_for_current_user()
 
         # DEBUG: Review the response
-        print("==== RESPONSE ====")
-        print("---- content (utf-8 encoded bytestring) ----")
-        print(response.content)
-        print("---- end content ----")
-        print("---- content (decoded) ----")
-        print(response.content.decode())
-        print("---- end content ----")
-        print("==== END RESPONSE ====")
+        # print("==== RESPONSE ====")
+        # print("---- content (utf-8 encoded bytestring) ----")
+        # print(response.content)
+        # print("---- end content ----")
+        # print("---- content (decoded) ----")
+        # print(response.content.decode())
+        # print("---- end content ----")
+        # print("==== END RESPONSE ====")
 
         # Capture the output from the page
         decoded = response.content.decode()
@@ -430,24 +439,24 @@ class EditProfileViewTest(AccountViewsTestCase):
         self.assertEqual(profile.favourite_fountain_pen, new_profile_data['favourite_fountain_pen'])
 
 
-class BioViewTest(AccountViewsTestCase):
+class BioViewTest(AccountViewsWithUserTestCase):
     
     def setUp(self):
         super().setUp()
         self.abstract = False
         self.name += 'bio'
-        self.template += 'bio.html'
+        self.template_title = 'Bio | '
         self.url += 'bio'
         self.target_view = bio
 
 
-class ChangePasswordViewTest(AccountViewsTestCase):
+class ChangePasswordViewTest(AccountViewsWithUserTestCase):
     
     def setUp(self):
         super().setUp()
         self.abstract = False
         self.name += 'change_password'
-        self.template += 'change_password.html'
+        self.template_title = 'Password Change'
         self.url += 'profile/change-password'
         self.target_view = change_password
 
@@ -463,4 +472,3 @@ class ChangePasswordViewTest(AccountViewsTestCase):
     # (see edit profile view tests)
     def test_view_redirects_to_correct_view_on_valid_POST(self):
         self.fail("implement me")
-
