@@ -1,6 +1,8 @@
 Project 7: User Profile With Django
 ===================================
 
+User: test@test.com
+
 Password:
 Project7-UserProfile
 
