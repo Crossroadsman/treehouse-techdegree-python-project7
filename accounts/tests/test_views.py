@@ -102,20 +102,10 @@ class AccountViewsWithUserTestCase(AccountViewsTestCase):
     def setUp(self):
         super().setUp()
 
-        # To provide a user we need to build a custom request using
-        # RequestFactory
-        self.request_factory = RequestFactory()
         self.user = User.objects.create(email="alicesmith@test.com")
-        # TODO: ACTUALLY, it looks like we can do this:
-        # self.user = User.objects.create(email="alicesmith@test.com")
-        # self.client.force_login(self.user)
+        self.client.force_login(self.user)
         # see:
         # https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.Client.force_login
-
-        # Using ReqeustFactory instead of client, we can't use
-        # assertTemplateUsed. Therefore we'll check that we've rendered
-        # the correct template by testing the rendered <title> element
-        self.template_title = ''
 
     # Helper Methods
     # --------------
@@ -155,43 +145,12 @@ class AccountViewsWithUserTestCase(AccountViewsTestCase):
 
         return test_profile_data
 
-    def make_request_for_current_user(self, method='get', redirect=None, data=None):
-        if method.lower() == 'post':
-            request = self.request_factory.post(
-                redirect,
-                data=data
-            )
-        else:  # 'get'
-            request = self.request_factory.get(reverse(self.name))
-        request.user = self.user
-        response = self.target_view(request)
-        return response
-
     def get_title_text(self, response):
         decoded = response.content.decode()
         start = decoded.find('<title>') + 7
         end = decoded.find('</title>')
         title = decoded[start:end]
         return title
-
-
-    # Test Methods
-    # ------------
-    def test_view_associated_with_correct_name(self):
-        self.userprofile = self.create_userprofile(self.user)
-
-        response = self.make_request_for_current_user()
-
-        self.assertEqual(response.status_code, self.status_code)
-
-    def test_view_renders_correct_template(self):
-        self.userprofile = self.create_userprofile(self.user)
-
-        response = self.make_request_for_current_user()
-
-        title = self.get_title_text(response)
-
-        self.assertEqual(self.template_title, title)
 
     
 class ProfileViewTest(AccountViewsWithUserTestCase):
@@ -200,9 +159,20 @@ class ProfileViewTest(AccountViewsWithUserTestCase):
         super().setUp()
         self.abstract = False
         self.name += 'profile'
-        self.template_title = 'Profile | '
+        self.template = 'profile.html'
         self.url += 'profile'
         self.target_view = profile
+
+    def test_view_renders_correct_template(self):
+        # if a userprofile exists
+        self.create_userprofile()
+        super().test_view_renders_correct_template()
+
+    def test_view_associated_with_correct_name(self):
+        # if a userprofile exists
+        self.create_userprofile()
+        super().test_view_associated_with_correct_name()
+
 
     def test_redirects_to_editprofile_if_no_userprofile(self):
         redirect_target = '/accounts/edit_profile'
