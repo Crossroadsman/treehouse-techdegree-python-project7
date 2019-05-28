@@ -179,10 +179,11 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         redirect_target = '/accounts/profile'
 
         # create data for POSTing
+        self.userprofile = self.create_userprofile(self.user)
         postdata = {
             'email': self.user.email,
             'confirm_email': self.user.email,
-            'dob': self.userprofile.date_of_birth,
+            'date_of_birth': self.userprofile.date_of_birth,
             'bio': self.userprofile.bio
         }
 
@@ -199,22 +200,6 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         # Associate a userprofile
         self.userprofile = self.create_userprofile(self.user)
 
-        # Arrange test data and create initial userprofile data
-        # Field list:
-        # email (user)
-        #
-        # confirm email
-        #
-        # dob
-        # first name
-        # last name
-        # bio
-        # city
-        # state
-        # country
-        # favourite animal
-        # hobby
-        # favourite fountain pen
         user_data = {
             'email': self.user.email,
             'confirm_email': self.user.email
@@ -311,9 +296,17 @@ class BioViewTest(AccountViewsWithUserTestCase):
         super().setUp()
         self.abstract = False
         self.name += 'bio'
-        self.template_title = 'Bio | '
+        self.template += 'bio.html'
         self.url += 'bio'
         self.target_view = bio
+
+    def test_view_renders_correct_template(self):
+        self.create_userprofile(self.user)
+        super().test_view_renders_correct_template()
+
+    def test_view_associated_with_correct_name(self):
+        self.create_userprofile(self.user)
+        super().test_view_associated_with_correct_name()
 
 
 class ChangePasswordViewTest(AccountViewsWithUserTestCase):
