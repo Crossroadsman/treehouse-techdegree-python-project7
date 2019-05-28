@@ -1,16 +1,9 @@
-from datetime import date
-
-import unittest
-
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, get_user
 User = get_user_model()
-from django.template.loader import render_to_string
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, TestCase
 from django.urls import resolve, reverse
 
-from accounts.models import UserProfile
-from accounts.views import (sign_in, sign_up, sign_out, profile, 
-                            edit_profile, bio, change_password)
+from accounts.views import (sign_in, sign_up)
 
 
 class AccountViewsTestCase(TestCase):
@@ -55,7 +48,85 @@ class AccountViewsTestCase(TestCase):
         
         self.assertTemplateUsed(response, self.template)
 
-### Move AccountViewsWithUserTestCase definition here later ###
+
+class SignUpViewTest(AccountViewsTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.abstract = False
+        self.name += 'sign_up'
+        self.template += 'sign_up.html'
+        self.url += 'sign_up'
+        self.target_view = sign_up
+
+    def test_new_user_is_created_after_correct_sign_up(self):
+        test_email = "alicesmith@test.com"
+        test_password = "Testing123xyz!;,"
+
+        before_users_count = User.objects.all().count()
+
+        # DEBUG
+        # print("==== BEFORE_USERS ====")
+        # for user in before_users:
+        #     print(user.pk)
+        #     print(user)
+        #     print(user.email)
+        # print("==== END BEFORE_USERS ====")
+
+        response = self.client.post(
+            reverse(self.name),
+            data={
+                'email': test_email,
+                'password1': test_password,
+                'password2': test_password
+            }
+        )
+
+        # DEBUG
+        # print("==== RESPONSE ====")
+        # print("---- status ----")
+        # print(response.status_code)
+        # print("---- end status ----")
+        # print("---- content (utf-8 encoded bytestring) ----")
+        # print(response.content)
+        # print("---- end content ----")
+        # print("---- content (decoded) ----")
+        # print(response.content.decode())
+        # print("---- end content ----")
+        # print("==== END RESPONSE ====")
+
+        after_users_count = User.objects.all().count()
+        # DEBUG
+        # print("==== AFTER_USERS ====")
+        # for user in after_users:
+        #     print(user.pk)
+        #     print(user)
+        #     print(user.email)
+        # print("==== END AFTER_USERS ====")
+
+        new_user_count = after_users_count - before_users_count
+        self.assertEqual(new_user_count, 1)
+
+    def test_duplicate_user_is_not_created_after_sign_up(self):
+        test_email = "alicesmith@test.com"
+        test_password = "Testing123xyz!;,"
+
+        existing_user = User.objects.create_user(test_email, test_password)
+
+        before_users_count = User.objects.all().count()
+
+        self.client.post(
+            reverse(self.name),
+            data={
+                'email': test_email,
+                'password1': test_password,
+                'password2': test_password
+            }
+        )
+
+        after_users_count = User.objects.all().count()
+
+        self.assertEqual(before_users_count, after_users_count)
 
 
 class SignInViewTest(AccountViewsTestCase):
@@ -68,377 +139,64 @@ class SignInViewTest(AccountViewsTestCase):
         self.url += 'sign_in'
         self.target_view = sign_in
 
-
-class SignUpViewTest(AccountViewsTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.abstract = False
-        self.name += 'sign_up'
-        self.template += 'sign_up.html'
-        self.url += 'sign_up'
-        self.target_view = sign_up
-
-
-class SignOutViewTest(AccountViewsTestCase):
-    
-    def setUp(self):
-        super().setUp()
-        self.abstract = False
-        self.name += 'sign_out'
-        self.status_code = 302  # This view just redirects
-        self.template += 'sign_out.html'
-        self.url += 'sign_out'
-        self.target_view = sign_out
-
-    @unittest.skip("no template to render, just redirects")
-    def test_view_renders_correct_template(self):
-        pass
-
-class AccountViewsWithUserTestCase(AccountViewsTestCase):
-    
-    # setup and teardown
-    # ------------------
-    def setUp(self):
-        super().setUp()
-
-        self.user = User.objects.create(email="alicesmith@test.com")
-        self.client.force_login(self.user)
-        # see:
-        # https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.Client.force_login
-
-    # Helper Methods
-    # --------------
-    def create_userprofile(self, user):
-        userprofile = UserProfile.objects.create(
-            user=user,
-            date_of_birth=date(1977, 5, 25),
-            bio="this is a string with more than 10 characters"
-        )
-        return userprofile
-
-    def create_optional_userprofile_data(self):
-        """One a user is active and has a userprofile, populate the
-        optional fields with some standardised test data
-
-        returns the dictionary of test data for use in asserts
-        """
-        test_profile_data = {
-            'given_name': 'alice',
-            'family_name': 'smith',
-            'city': 'anytown',
-            'state': 'anystate',
-            'country': 'anycountry',
-            'favourite_animal': 'dog',
-            'hobby': 'dog snuggling',
-            'favourite_fountain_pen': 'pilot metropolitan'
+        self.test_credentials = {
+            'email': "alicesmith@test.com",
+            'password': "Testing123xyz!,."
         }
-        self.userprofile.given_name = test_profile_data['given_name']
-        self.userprofile.family_name = test_profile_data['family_name']
-        self.userprofile.city = test_profile_data['city']
-        self.userprofile.state = test_profile_data['state']
-        self.userprofile.country = test_profile_data['country']
-        self.userprofile.favourite_animal = test_profile_data['favourite_animal']
-        self.userprofile.hobby = test_profile_data['hobby']
-        self.userprofile.favourite_fountain_pen = test_profile_data['favourite_fountain_pen']
-        self.userprofile.save()
-
-        return test_profile_data
-
-    def get_title_text(self, response):
-        decoded = response.content.decode()
-        start = decoded.find('<title>') + 7
-        end = decoded.find('</title>')
-        title = decoded[start:end]
-        return title
-
+        self.test_user = User.objects.create_user(**self.test_credentials)
     
-class ProfileViewTest(AccountViewsWithUserTestCase):
-    
-    def setUp(self):
-        super().setUp()
-        self.abstract = False
-        self.name += 'profile'
-        self.template = 'profile.html'
-        self.url += 'profile'
-        self.target_view = profile
-
-    def test_view_renders_correct_template(self):
-        # if a userprofile exists
-        self.create_userprofile()
-        super().test_view_renders_correct_template()
-
-    def test_view_associated_with_correct_name(self):
-        # if a userprofile exists
-        self.create_userprofile()
-        super().test_view_associated_with_correct_name()
-
-
-    def test_redirects_to_editprofile_if_no_userprofile(self):
-        redirect_target = '/accounts/edit_profile'
-
-        response = self.make_request_for_current_user()
-        self.assertEqual(response.status_code, 302)
-
-        # DEBUG
-        print("==== RESPONSE ====")
-        print("---- status ----")
-        print(response.status_code)
-        print("---- end status ----")
-        print("---- content (utf-8 encoded bytestring) ----")
-        print(response.content)
-        print("---- end content ----")
-        print("---- content (decoded) ----")
-        print(response.content.decode())
-        print("---- end content ----")
-        print("==== END RESPONSE ====")
-
-        self.assertRedirects(response, redirect_target)
-
-    def test_displays_correct_profile_data(self):
+    def test_specified_user_is_logged_in_after_correct_sign_in(self):
         
-        self.userprofile = self.create_userprofile(self.user)
-        test_profile_data = self.create_optional_userprofile_data()
-        
+        user_before_login = get_user(self.client)
+        self.assertFalse(user_before_login.is_authenticated)
 
-        response = self.make_request_for_current_user()
-
-        # You can compare the raw bytes content and decoded content by
-        # uncommenting the folllowing code:
-        # print("==== RESPONSE ====")
-        # print("---- content (utf-8 encoded bytestring) ----")
-        # print(response.content)
-        # print("---- end content ----")
-        # print("---- content (decoded) ----")
-        # print(response.content.decode())
-        # print("---- end content ----")
-        # print("==== END RESPONSE ====")
-
-        # Django provides assertContains: like assertIn but automatically
-        # handles encoding/decoding between response.content bytestring
-        # and regular python strings (saving us from using the decode() method
-        # on the response.content bytestring)
-        for value in test_profile_data.values():
-            self.assertContains(response, value)
-
-
-class EditProfileViewTest(AccountViewsWithUserTestCase):
-    
-    # Setup and Teardown
-    # ------------------
-    def setUp(self):
-        super().setUp()
-        self.abstract = False
-        self.name += 'edit_profile'
-        self.template_title = 'Edit Profile | '
-        self.url += 'profile/edit'
-        self.target_view = edit_profile
-
-    # Test Methods
-    # ------------    
-    def test_view_renders_correct_template_if_POST_invalid(self):
-        # for POSTs with validation errors
-        self.userprofile = self.create_userprofile(self.user)
-        
-        test_userform = {}
-        test_profileform = {}
-        test_postdata = {**test_userform, **test_profileform}
-
-        response = self.make_request_for_current_user(
-            method='post',
-            redirect=reverse(self.name),
-            data=test_postdata
+        # The authentication form always calls the identity field 'username'
+        # even though we've called it 'email' on our model
+        self.client.post(
+            reverse(self.name),
+            data={
+                'username': self.test_credentials['email'],
+                'password': self.test_credentials['password']
+            }
         )
 
-        # DEBUG
-        # print("==== RESPONSE (POST INVALID)====")
-        # print("---- content (utf-8 encoded bytestring) ----")
-        # print(response.content)
-        # print("---- end content ----")
-        # print("---- content (decoded) ----")
-        # print(response.content.decode())
-        # print("---- end content ----")
-        # print("==== END RESPONSE ====")
+        user_after_login = get_user(self.client)
+        self.assertTrue(user_after_login.is_authenticated)
 
-        title = self.get_title_text(response)
+    def test_specified_user_is_not_logged_in_after_incorrect_username(self):
+        bad_username = "bobjones@test.com"
 
-        self.assertEqual(self.template_title, title)
+        user_before_login = get_user(self.client)
+        self.assertFalse(user_before_login.is_authenticated)
 
-    def test_redirects_to_profile_if_valid_POST(self):
-        # for valid POSTs
-        redirect_target = '/accounts/profile'
-
-        # create data for POSTing
-        user_data = {
-            'email': self.user.email,
-            'confirm_email': self.user.email
-        }
-        required_profile_data = {
-            'dob': self.userprofile.date_of_birth,
-            'bio': self.userprofile.bio
-        }
-        optional_profile_data = self.create_optional_userprofile_data()
-        test_fields = {**user_data, **required_profile_data, **optional_profile_data}
-
-        response = self.make_request_for_current_user(
-            method='post',
-            redirect=reverse(self.name),
-            data=test_fields
+        # The authentication form always calls the identity field 'username'
+        # even though we've called it 'email' on our model
+        self.client.post(
+            reverse(self.name),
+            data={
+                'username': bad_username,
+                'password': self.test_credentials['password']
+            }
         )
 
-        self.assertRedirects(response, redirect_target)
+        user_after_login = get_user(self.client)
+        self.assertFalse(user_after_login.is_authenticated)
 
-    def test_view_populates_form_with_existing_profile_data(self):
+    def test_specified_user_is_not_logged_in_after_incorrect_password(self):
+        bad_password = "BadPass123xyz!.,"
 
-        # Create a user (done as part of setUp)
-        # Associate a userprofile
-        self.userprofile = self.create_userprofile(self.user)
+        user_before_login = get_user(self.client)
+        self.assertFalse(user_before_login.is_authenticated)
 
-        # Arrange test data and create initial userprofile data
-        # Field list:
-        # email (user)
-        #
-        # confirm email
-        #
-        # dob
-        # first name
-        # last name
-        # bio
-        # city
-        # state
-        # country
-        # favourite animal
-        # hobby
-        # favourite fountain pen
-        user_data = {
-            'email': self.user.email,
-            'confirm_email': self.user.email
-        }
-        required_profile_data = {
-            'dob': self.userprofile.date_of_birth,
-            'bio': self.userprofile.bio
-        }
-        optional_profile_data = self.create_optional_userprofile_data()
-        test_fields = {**user_data, **required_profile_data, **optional_profile_data}
-
-        # Create a GET request with that user
-        response = self.make_request_for_current_user()
-
-        # DEBUG: Review the response
-        # print("==== RESPONSE ====")
-        # print("---- content (utf-8 encoded bytestring) ----")
-        # print(response.content)
-        # print("---- end content ----")
-        # print("---- content (decoded) ----")
-        # print(response.content.decode())
-        # print("---- end content ----")
-        # print("==== END RESPONSE ====")
-
-        # Capture the output from the page
-        decoded = response.content.decode()
-
-        # Assert that the form fields are populated with the values
-        for field, value in test_fields.items():
-            self.assertContains(decoded, f'id_{field}')
-            self.assertContains(decoded, f'value="{value}"')
-
-    def test_view_updates_models_with_profile_changes(self):
-        # Create a user (done as part of setUp)
-        # Associate a userprofile
-        self.userprofile = self.create_userprofile(self.user)
-        user_id = self.user.id
-        
-        # Create initial userprofile data
-        self.create_initial_userprofile_data()
-
-        # Define new userprofile data
-        new_user_data = {
-            'email': 'bobjones@test.com',
-            'confirm_email': 'bobjones@test.com',
-        }
-        new_profile_data = {
-            'date_of_birth': date(1980, 5, 17),
-            'bio': 'This is a different string of at least 10 characters',
-            'given_name': 'bob',
-            'family_name': 'jones',
-            'city': 'othertown',
-            'state': 'otherstate',
-            'country': 'othercountry',
-            'favourite_animal': 'also dog',
-            'hobby': 'dog cuddling',
-            'favourite_fountain_pen': 'lamy vista'
-        }
-        new_data_combined = {**new_user_data, **new_profile_data}
-
-        # Build the request with the changes, and then POST it
-
-        # POST the form
-        # request = self.request_factory.post(reverse(self.name), data=new_data_combined)
-        # request.user = self.user
-        # response = self.target_view(request)
-        response = self.make_request_for_current_user(
-            method='post',
-            redirect=reverse(self.name),
-            data=new_data_combined
+        # The authentication form always calls the identity field 'username'
+        # even though we've called it 'email' on our model
+        self.client.post(
+            reverse(self.name),
+            data={
+                'username': self.test_credentials['email'],
+                'password': bad_password
+            }
         )
 
-        # DEBUG: Review the response
-        # print("==== RESPONSE ====")
-        # print("---- content (utf-8 encoded bytestring) ----")
-        # print(response.content)
-        # print("---- end content ----")
-        # print("---- content (decoded) ----")
-        # print(response.content.decode())
-        # print("---- end content ----")
-        # print("==== END RESPONSE ====")
-        
-        # load the model(s)
-        user = User.objects.get(pk=user_id)
-        profile = user.userprofile
-
-        # confirm model data matches submitted changes
-        self.assertEqual(user.email, new_user_data['email'])
-
-        self.assertEqual(profile.given_name, new_profile_data['given_name'])
-        self.assertEqual(profile.family_name, new_profile_data['family_name'])
-        self.assertEqual(profile.city, new_profile_data['city'])
-        self.assertEqual(profile.state, new_profile_data['state'])
-        self.assertEqual(profile.country, new_profile_data['country'])
-        self.assertEqual(profile.favourite_animal, new_profile_data['favourite_animal'])
-        self.assertEqual(profile.hobby, new_profile_data['hobby'])
-        self.assertEqual(profile.favourite_fountain_pen, new_profile_data['favourite_fountain_pen'])
-
-
-class BioViewTest(AccountViewsWithUserTestCase):
-    
-    def setUp(self):
-        super().setUp()
-        self.abstract = False
-        self.name += 'bio'
-        self.template_title = 'Bio | '
-        self.url += 'bio'
-        self.target_view = bio
-
-
-class ChangePasswordViewTest(AccountViewsWithUserTestCase):
-    
-    def setUp(self):
-        super().setUp()
-        self.abstract = False
-        self.name += 'change_password'
-        self.template_title = 'Password Change'
-        self.url += 'profile/change-password'
-        self.target_view = change_password
-
-    # renders view on GET
-    # (included with parent TestCase)
-
-    # renders view on invalid POST
-    # (see edit profile view tests)
-    def test_view_renders_correct_template_on_invalid_POST(self):
-        self.fail("implement me")
-
-    # redirect on valid POST
-    # (see edit profile view tests)
-    def test_view_redirects_to_correct_view_on_valid_POST(self):
-        self.fail("implement me")
+        user_after_login = get_user(self.client)
+        self.assertFalse(user_after_login.is_authenticated)

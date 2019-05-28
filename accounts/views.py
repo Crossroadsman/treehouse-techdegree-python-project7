@@ -22,9 +22,7 @@ def sign_in(request):
                 user = form.user_cache
                 if user.is_active:
                     login(request, user)
-                    return redirect(
-                        reverse('home')  # TODO: go to profile
-                    )
+                    return redirect(reverse('accounts:profile'))
                 else:
                     messages.error(
                         request,
@@ -41,8 +39,14 @@ def sign_in(request):
 def sign_up(request):
     form = P7UserCreationForm()
     if request.method == 'POST':
+        #DEBUG
+        print("POSTING!")
+        
         form = P7UserCreationForm(data=request.POST)
         if form.is_valid():
+            #DEBUG
+            print("form is valid!")
+            
             form.save()
             user = authenticate(
                 email=form.cleaned_data['email'],
@@ -53,7 +57,15 @@ def sign_up(request):
                 request,
                 "You're now a user! You've been signed in, too."
             )
-            return redirect(reverse('home'))  # TODO: go to profile
+
+            #DEBUG
+            users = get_user_model().objects.all()
+            for user in users:
+                print(user.pk)
+                print(user.email)
+                print(user)
+
+            return redirect(reverse('accounts:profile'))
     return render(request, 'accounts/sign_up.html', {'form': form})
 
 
