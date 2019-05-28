@@ -39,14 +39,9 @@ def sign_in(request):
 def sign_up(request):
     form = P7UserCreationForm()
     if request.method == 'POST':
-        #DEBUG
-        print("POSTING!")
         
         form = P7UserCreationForm(data=request.POST)
         if form.is_valid():
-            #DEBUG
-            print("form is valid!")
-            
             form.save()
             user = authenticate(
                 email=form.cleaned_data['email'],
@@ -57,15 +52,8 @@ def sign_up(request):
                 request,
                 "You're now a user! You've been signed in, too."
             )
-
-            #DEBUG
-            users = get_user_model().objects.all()
-            for user in users:
-                print(user.pk)
-                print(user.email)
-                print(user)
-
             return redirect(reverse('accounts:profile'))
+
     return render(request, 'accounts/sign_up.html', {'form': form})
 
 
@@ -125,15 +113,19 @@ def bio(request):
 
 
 def change_password(request):
+
     user = request.user
     form = PasswordChangeForm(user)
+    
     if request.method == "POST":
         form = PasswordChangeForm(user, request.POST)
         if form.is_valid():
             u = form.save()
             update_session_auth_hash(request, u)
             messages.success(request, "Password successfully changed")
+
             return redirect(reverse('accounts:profile'))
+
     template = 'accounts/change_password.html'
     context = {'form': form}
     return render(request, template, context)

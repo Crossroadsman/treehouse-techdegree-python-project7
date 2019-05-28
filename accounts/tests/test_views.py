@@ -65,15 +65,7 @@ class SignUpViewTest(AccountViewsTestCase):
 
         before_users_count = User.objects.all().count()
 
-        # DEBUG
-        # print("==== BEFORE_USERS ====")
-        # for user in before_users:
-        #     print(user.pk)
-        #     print(user)
-        #     print(user.email)
-        # print("==== END BEFORE_USERS ====")
-
-        response = self.client.post(
+        self.client.post(
             reverse(self.name),
             data={
                 'email': test_email,
@@ -82,27 +74,7 @@ class SignUpViewTest(AccountViewsTestCase):
             }
         )
 
-        # DEBUG
-        # print("==== RESPONSE ====")
-        # print("---- status ----")
-        # print(response.status_code)
-        # print("---- end status ----")
-        # print("---- content (utf-8 encoded bytestring) ----")
-        # print(response.content)
-        # print("---- end content ----")
-        # print("---- content (decoded) ----")
-        # print(response.content.decode())
-        # print("---- end content ----")
-        # print("==== END RESPONSE ====")
-
         after_users_count = User.objects.all().count()
-        # DEBUG
-        # print("==== AFTER_USERS ====")
-        # for user in after_users:
-        #     print(user.pk)
-        #     print(user)
-        #     print(user.email)
-        # print("==== END AFTER_USERS ====")
 
         new_user_count = after_users_count - before_users_count
         self.assertEqual(new_user_count, 1)
