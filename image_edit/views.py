@@ -12,7 +12,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 @ensure_csrf_cookie
 def cropper(request):
-    template = 'cropper/cropper.html'
+    template = 'image_edit/cropper.html'
     context = {}
     return render(request, template, context)
 
