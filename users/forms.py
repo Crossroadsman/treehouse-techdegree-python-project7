@@ -86,8 +86,13 @@ class OtherIdentityAttributesValidator(object):
         if user:
             forbidden_words.append(user.email.lower())
             if hasattr(user, 'userprofile'):
-                forbidden_words.append(user.userprofile.given_name.lower())
-                forbidden_words.append(user.userprofile.family_name.lower())
+                given_name = user.userprofile.given_name.lower()
+                family_name = user.userprofile.family_name.lower()
+                
+                for name in [given_name, family_name]:
+                    # don't add empty string to forbidden words!
+                    if len(name) > 0:
+                        forbidden_words.append(name)
 
         for word in forbidden_words:
             if word in password.lower():
