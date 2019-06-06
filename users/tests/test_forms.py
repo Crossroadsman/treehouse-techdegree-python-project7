@@ -45,28 +45,34 @@ class P7UserCreationFormTestCase(TestCase):
 
 
 class P7UserChangeFormTestCase(TestCase):
+
+    def setUp(self):
+        self.user_details = {
+            'password': 'ValidPass123456,./',
+            'email': 'alicesmith@test.com',
+        }
+        self.user = User.objects.create_user(
+            email=self.user_details['email'],
+            password=self.user_details['password']
+        )
     
     def test_form_with_valid_inputs_passes_validation(self):
         test_inputs = {
-            'password': 'ValidPass123456,./',
             'email': 'bobjones@test.com',  # new email
-            'confirm_email': 'bobjones@test.com'
+            'confirm_email': 'bobjones@test.com',
         }
 
-        form = P7UserChangeForm(data=test_inputs)
+        form = P7UserChangeForm(data=test_inputs, instance=self.user)
 
         self.assertTrue(form.is_valid())
 
     def test_form_fails_validation_if_emails_dont_match(self):
         test_inputs = {
-            'password': 'ValidPass123456,./',
             'email': 'bobjones@test.com',  # new email
             'confirm_email': 'carolrivest@test.com'
         }
 
-        User.objects.create_user(email=test_inputs['email'], password=test_inputs['password1'])
-
-        form = P7UserChangeForm(data=test_inputs)
+        form = P7UserChangeForm(data=test_inputs, instance=self.user)
 
         self.assertFalse(form.is_valid())
 
