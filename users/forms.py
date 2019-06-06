@@ -15,8 +15,7 @@ from django.core.exceptions import ValidationError
 
 # The purpose of this class is to override the builtin version
 # (https://github.com/django/django/blob/master/django/contrib/auth/forms.py)
-# so that
-# we can customise it. In this case we are:
+# so that we can customise it. In this case we are:
 # - adding an email address field (and setting the label text for the email
 #   field)
 class P7UserCreationForm(UserCreationForm):
@@ -26,6 +25,8 @@ class P7UserCreationForm(UserCreationForm):
                                 widget=forms.PasswordInput)
 
     class Meta:
+        # The form will contain any fields we specify here, plus any
+        # we define in the outer class (e.g., `password1` and `password2`).
         fields = ("email",)
         model = get_user_model()
 
@@ -101,7 +102,7 @@ class OtherIdentityAttributesValidator(object):
     def get_help_text(self):
         return self.error_msg['message']
 
-
+# TODO: Check if we actually need this
 class ContentsValidator(object):
     """Check that the password contains the specified characters"""
     error_msg = {
