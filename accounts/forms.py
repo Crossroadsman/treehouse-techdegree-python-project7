@@ -5,14 +5,14 @@ from .models import UserProfile
 
 
 class UserProfileForm(forms.ModelForm):
-    # It is valid to explicitly instantiate a form field that has a 
+    # It is valid to explicitly instantiate a form field that has a
     # corresponding model field, but such a field will not take any of the
     # defaults from the model
     date_of_birth = forms.DateField(
         label="Date of birth",
-        input_formats = ['%Y-%m-%d',      # '2006-10-25'
-                         '%m/%d/%Y',      # '10/25/2006'
-                         '%d/%m/%y']      # '25/10/06'
+        input_formats=['%Y-%m-%d',      # '2006-10-25'
+                       '%m/%d/%Y',      # '10/25/2006'
+                       '%d/%m/%y']      # '25/10/06'
     )
 
     # Note that method declarations for cleaning must come before the
