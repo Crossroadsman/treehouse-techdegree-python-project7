@@ -39,7 +39,7 @@ def sign_in(request):
 def sign_up(request):
     form = P7UserCreationForm()
     if request.method == 'POST':
-        
+
         form = P7UserCreationForm(data=request.POST)
         if form.is_valid():
             form.save()
@@ -81,8 +81,16 @@ def edit_profile(request):
     else:
         up_instance = None
     if request.method == "POST":
-        user_form = P7UserChangeForm(request.POST, instance=user, initial={'confirm_email': user.email})
-        profile_form = UserProfileForm(request.POST, request.FILES, instance=up_instance)
+        user_form = P7UserChangeForm(
+            request.POST,
+            instance=user,
+            initial={'confirm_email': user.email}
+        )
+        profile_form = UserProfileForm(
+            request.POST,
+            request.FILES,
+            instance=up_instance
+        )
         if all([user_form.is_valid(),
                 profile_form.is_valid()]):
             user_form.save()
@@ -92,16 +100,19 @@ def edit_profile(request):
             profile.bio = sanitizer.sanitize(profile.bio)
             profile.save()
             return redirect(reverse('accounts:profile'))
-    
+
     else:  # GET
-        user_form = P7UserChangeForm(instance=user, initial={'confirm_email': user.email})
+        user_form = P7UserChangeForm(
+            instance=user,
+            initial={'confirm_email': user.email}
+        )
         profile_form = UserProfileForm(instance=up_instance)
-    
+
     template = 'accounts/edit_profile.html'
     context = {'user_form': user_form,
                'profile_form': profile_form}
     return render(request, template, context)
-        
+
 
 def bio(request):
     user = get_object_or_404(get_user_model(), pk=request.user.pk)
@@ -116,7 +127,7 @@ def change_password(request):
 
     user = request.user
     form = PasswordChangeForm(user)
-    
+
     if request.method == "POST":
         form = PasswordChangeForm(user, request.POST)
         if form.is_valid():
