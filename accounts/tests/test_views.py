@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model, get_user
-User = get_user_model()
 from django.test import Client, TestCase
 from django.urls import resolve, reverse
 
 from accounts.views import (sign_in, sign_up)
+
+
+User = get_user_model()
 
 
 class AccountViewsTestCase(TestCase):
@@ -43,9 +45,9 @@ class AccountViewsTestCase(TestCase):
     def test_view_renders_correct_template(self):
         if self.abstract:
             return
-    
+
         response = self.client.get(reverse(self.name))
-        
+
         self.assertTemplateUsed(response, self.template)
 
 
@@ -116,9 +118,9 @@ class SignInViewTest(AccountViewsTestCase):
             'password': "Testing123xyz!,."
         }
         self.test_user = User.objects.create_user(**self.test_credentials)
-    
+
     def test_specified_user_is_logged_in_after_correct_sign_in(self):
-        
+
         user_before_login = get_user(self.client)
         self.assertFalse(user_before_login.is_authenticated)
 

@@ -3,11 +3,13 @@ from datetime import date
 from unittest.mock import Mock
 
 from django.contrib.auth import get_user_model
-User = get_user_model()
 from django.db.utils import IntegrityError
 from django.test import TestCase, TransactionTestCase
 
 from accounts.models import user_avatar_path, UserProfile
+
+
+User = get_user_model()
 
 
 class UserAvatarPathFunctionTest(TestCase):
@@ -22,14 +24,13 @@ class UserAvatarPathFunctionTest(TestCase):
         self.assertEqual(avatar_path, expected_output)
 
 
-# We use TransactionTestCase instead of the more common TestCase for the 
+# We use TransactionTestCase instead of the more common TestCase for the
 # following test because the way that the test database rolls back when
 # using TestCase causes errors when trying to iterate through the invalid
 # UserProfiles. See more detailed description of the difference between
 # TestCase and TransactionTestCase at:
 # https://docs.djangoproject.com/en/1.11/topics/testing/tools/#transactiontestcase
 class UserProfileModelTest(TransactionTestCase):
-
 
     def setUp(self):
         self.valid_user = User.objects.create(email="test@test.com")
@@ -77,27 +78,27 @@ class UserProfileModelTest(TransactionTestCase):
     def test_userprofile_string_representation_is_name_andor_email(self):
         """if a part of the name is available, e.g., 'Alice', the
         representation should be the available name then email in parens,
-        e.g., 'Alice (alice@test.com)'. If no name, just email, e.g., 
+        e.g., 'Alice (alice@test.com)'. If no name, just email, e.g.,
         'alice@test.com'. Surnames are in all-caps
         """
         test_data = [
             {
-                'email': 'noname@test.com', 
+                'email': 'noname@test.com',
                 'expected_str': 'noname@test.com'
             },
             {
-                'email': 'alice@test.com', 
+                'email': 'alice@test.com',
                 'given_name': 'alice',
                 'expected_str': 'alice (alice@test.com)',
             },
             {
-                'email': 'smith@test.com', 
+                'email': 'smith@test.com',
                 'family_name': 'smith',
                 'expected_str': 'SMITH (smith@test.com)',
             },
             {
-                'email': 'alicesmith@test.com', 
-                'given_name': 'alice', 
+                'email': 'alicesmith@test.com',
+                'given_name': 'alice',
                 'family_name': 'smith',
                 'expected_str': 'alice SMITH (alicesmith@test.com)',
             },
@@ -110,12 +111,11 @@ class UserProfileModelTest(TransactionTestCase):
                 user=u,
                 date_of_birth=self.valid_dob,
                 bio=self.valid_bio,
-                given_name = user.get('given_name', ''),
-                family_name = user.get('family_name', ''),
+                given_name=user.get('given_name', ''),
+                family_name=user.get('family_name', ''),
             )
 
         for user in test_data:
             u = User.objects.get(email=user['email'])
             profile = u.userprofile
             self.assertEqual(user['expected_str'], str(profile))
-            

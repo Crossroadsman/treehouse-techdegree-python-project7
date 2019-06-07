@@ -38,7 +38,7 @@ class UserProfileFormTest(TestCase):
         expected_inputs = self.required_form_fields + self.optional_form_fields
 
         rendered_form = form.as_p()
-        
+
         for field in expected_inputs:
             self.assertIn(f'id_{field}', rendered_form)
 

@@ -3,18 +3,20 @@ from datetime import date
 import unittest
 
 from django.contrib.auth import get_user_model, get_user
-User = get_user_model()
-from django.test import Client, RequestFactory
+from django.test import Client
 from django.urls import reverse
 
 from accounts.models import UserProfile
-from accounts.views import (sign_out, profile, 
+from accounts.views import (sign_out, profile,
                             edit_profile, bio, change_password)
 from accounts.tests.test_views import AccountViewsTestCase
 
 
+User = get_user_model()
+
+
 class AccountViewsWithUserTestCase(AccountViewsTestCase):
-    
+
     # setup and teardown
     # ------------------
     def setUp(self):
@@ -46,7 +48,7 @@ class AccountViewsWithUserTestCase(AccountViewsTestCase):
 
         returns the dictionary of test data for use in asserts
         """
-        test_profile_data = {
+        test_data = {
             'given_name': 'alice',
             'family_name': 'smith',
             'city': 'anytown',
@@ -54,19 +56,19 @@ class AccountViewsWithUserTestCase(AccountViewsTestCase):
             'country': 'anycountry',
             'favourite_animal': 'dog',
             'hobby': 'dog snuggling',
-            'favourite_fountain_pen': 'pilot metropolitan'
+            'pen': 'pilot metropolitan'
         }
-        self.userprofile.given_name = test_profile_data['given_name']
-        self.userprofile.family_name = test_profile_data['family_name']
-        self.userprofile.city = test_profile_data['city']
-        self.userprofile.state = test_profile_data['state']
-        self.userprofile.country = test_profile_data['country']
-        self.userprofile.favourite_animal = test_profile_data['favourite_animal']
-        self.userprofile.hobby = test_profile_data['hobby']
-        self.userprofile.favourite_fountain_pen = test_profile_data['favourite_fountain_pen']
+        self.userprofile.given_name = test_data['given_name']
+        self.userprofile.family_name = test_data['family_name']
+        self.userprofile.city = test_data['city']
+        self.userprofile.state = test_data['state']
+        self.userprofile.country = test_data['country']
+        self.userprofile.favourite_animal = test_data['favourite_animal']
+        self.userprofile.hobby = test_data['hobby']
+        self.userprofile.favourite_fountain_pen = test_data['pen']
         self.userprofile.save()
 
-        return test_profile_data
+        return test_data
 
     def get_title_text(self, response):
         decoded = response.content.decode()
@@ -77,7 +79,7 @@ class AccountViewsWithUserTestCase(AccountViewsTestCase):
 
 
 class SignOutViewTest(AccountViewsWithUserTestCase):
-    
+
     def setUp(self):
         super().setUp()
         self.abstract = False
@@ -97,13 +99,13 @@ class SignOutViewTest(AccountViewsWithUserTestCase):
         self.assertTrue(user_before_logout.is_authenticated)
 
         self.client.get(reverse(self.name))
-        
+
         user_after_logout = get_user(self.client)
         self.assertFalse(user_after_logout.is_authenticated)
 
 
 class ProfileViewTest(AccountViewsWithUserTestCase):
-    
+
     def setUp(self):
         super().setUp()
         self.abstract = False
@@ -122,7 +124,6 @@ class ProfileViewTest(AccountViewsWithUserTestCase):
         self.create_userprofile(self.user)
         super().test_view_associated_with_correct_name()
 
-
     def test_redirects_to_editprofile_if_no_userprofile(self):
         redirect_target = '/accounts/profile/edit'
 
@@ -131,7 +132,7 @@ class ProfileViewTest(AccountViewsWithUserTestCase):
         self.assertRedirects(response, redirect_target)
 
     def test_displays_correct_profile_data(self):
-        
+
         self.userprofile = self.create_userprofile(self.user)
         test_profile_data = self.create_optional_userprofile_data()
 
@@ -146,7 +147,7 @@ class ProfileViewTest(AccountViewsWithUserTestCase):
 
 
 class EditProfileViewTest(AccountViewsWithUserTestCase):
-    
+
     # Setup and Teardown
     # ------------------
     def setUp(self):
@@ -158,11 +159,11 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         self.target_view = edit_profile
 
     # Test Methods
-    # ------------    
+    # ------------
     def test_view_renders_correct_template_if_POST_invalid(self):
         # for POSTs with validation errors
         self.userprofile = self.create_userprofile(self.user)
-        
+
         test_userform = {}
         test_profileform = {}
         test_postdata = {**test_userform, **test_profileform}
@@ -208,7 +209,11 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
             'date_of_birth': self.userprofile.date_of_birth,
         }
         optional_profile_data = self.create_optional_userprofile_data()
-        test_fields = {**user_data, **required_profile_data, **optional_profile_data}
+        test_fields = {
+            **user_data,
+            **required_profile_data,
+            **optional_profile_data
+        }
 
         # Create a GET request with that user
         response = self.client.get(reverse(self.name))
@@ -225,7 +230,7 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         # Associate a userprofile
         self.userprofile = self.create_userprofile(self.user)
         user_id = self.user.id
-        
+
         # Create optional userprofile data
         self.create_optional_userprofile_data()
 
@@ -251,9 +256,6 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         # Build the request with the changes, and then POST it
 
         # POST the form
-        # request = self.request_factory.post(reverse(self.name), data=new_data_combined)
-        # request.user = self.user
-        # response = self.target_view(request)
         response = self.client.post(
             reverse(self.name),
             data=new_data_combined
@@ -272,7 +274,7 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         # # print(response.redirect_chain)
         # print("---- end redirect chain ----")
         # print("==== END RESPONSE ====")
-        
+
         # load the model(s)
         user = User.objects.get(pk=user_id)
         profile = user.userprofile
@@ -285,13 +287,19 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         self.assertEqual(profile.city, new_profile_data['city'])
         self.assertEqual(profile.state, new_profile_data['state'])
         self.assertEqual(profile.country, new_profile_data['country'])
-        self.assertEqual(profile.favourite_animal, new_profile_data['favourite_animal'])
+        self.assertEqual(
+            profile.favourite_animal,
+            new_profile_data['favourite_animal']
+        )
         self.assertEqual(profile.hobby, new_profile_data['hobby'])
-        self.assertEqual(profile.favourite_fountain_pen, new_profile_data['favourite_fountain_pen'])
+        self.assertEqual(
+            profile.favourite_fountain_pen,
+            new_profile_data['favourite_fountain_pen']
+        )
 
 
 class BioViewTest(AccountViewsWithUserTestCase):
-    
+
     def setUp(self):
         super().setUp()
         self.abstract = False
@@ -310,7 +318,7 @@ class BioViewTest(AccountViewsWithUserTestCase):
 
 
 class ChangePasswordViewTest(AccountViewsWithUserTestCase):
-    
+
     def setUp(self):
         super().setUp()
         self.abstract = False
@@ -326,7 +334,7 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
     def test_view_renders_correct_template_on_invalid_POST(self):
 
         wrong_password = 'InvalidPass123456,.'
-        
+
         response = self.client.post(
             reverse(self.name),
             data={
@@ -335,7 +343,7 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
                 'new_password2': self.test_credentials['password']
             }
         )
-        
+
         self.assertTemplateUsed(response, self.template)
 
     # redirect on valid POST to profile view
@@ -348,7 +356,7 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
         # ---------
         # Per the specifications, only bio and dob are required profile
         # fields.
-        # If we just create those fields, the other text fields will be 
+        # If we just create those fields, the other text fields will be
         # created with blank strings (e.g., first name and last name).
         # The password validator will then fail any new password because
         # any string contains the empty string.
@@ -358,7 +366,7 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
         # validator
         self.userprofile = self.create_userprofile(self.user)
         self.create_optional_userprofile_data()
-                
+
         response = self.client.post(
             reverse(self.name),
             data={
