@@ -10,7 +10,7 @@ from ckeditor.fields import RichTextField
 
 def user_avatar_path(instance, filename):
     """See django.db.models.FileField in the django docs
-    
+
     `instance` is the object with the ImageField (i.e, the user);
     `filename` is the file's original filename
     """
@@ -21,8 +21,7 @@ def user_avatar_path(instance, filename):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
-                                on_delete=models.CASCADE
-    )
+                                on_delete=models.CASCADE)
 
     date_of_birth = models.DateField()
     bio = RichTextField()
@@ -32,8 +31,8 @@ class UserProfile(models.Model):
                                   blank=True,
                                   default='')
     family_name = models.CharField(max_length=255,
-                                  blank=True,
-                                  default='')
+                                   blank=True,
+                                   default='')
 
     avatar = models.ImageField(
         upload_to=user_avatar_path,
@@ -86,5 +85,5 @@ class UserProfile(models.Model):
         return prefix + self.user.email + suffix
 
     def get_absolute_url(self):
-        return reverse('accounts:profile', 
-                       kwargs={'user_id': self.user_id,})
+        return reverse('accounts:profile',
+                       kwargs={'user_id': self.user_id})
