@@ -56,7 +56,7 @@ class AccountViewsWithUserTestCase(AccountViewsTestCase):
             'country': 'anycountry',
             'favourite_animal': 'dog',
             'hobby': 'dog snuggling',
-            'pen': 'pilot metropolitan'
+            'favourite_fountain_pen': 'pilot metropolitan'
         }
         self.userprofile.given_name = test_data['given_name']
         self.userprofile.family_name = test_data['family_name']
@@ -65,7 +65,8 @@ class AccountViewsWithUserTestCase(AccountViewsTestCase):
         self.userprofile.country = test_data['country']
         self.userprofile.favourite_animal = test_data['favourite_animal']
         self.userprofile.hobby = test_data['hobby']
-        self.userprofile.favourite_fountain_pen = test_data['pen']
+        self.userprofile.favourite_fountain_pen = \
+            test_data['favourite_fountain_pen']
         self.userprofile.save()
 
         return test_data
