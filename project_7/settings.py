@@ -91,7 +91,8 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
             'min_length': 14,
         }
@@ -135,7 +136,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # this is where collectstatic will put files
+
+# this is where collectstatic will put files:
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files (user images, etc)
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-MEDIA_ROOT
@@ -145,7 +148,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # this is where collectstati
 MEDIA_ROOT = os.path.join(
     BASE_DIR,
     'public',
-    'media'    
+    'media'
 )
 MEDIA_URL = '/public/media/'
 
@@ -160,14 +163,19 @@ EMAIL_HOST_PASSWORD =  # host password
 EMAIL_USE_TLS =
 EMAIL_USE_SSL =
 EMAIL_TIMEOUT = # if not set this uses socket.getdefaulttimeout which has default of None
-EMAIL_SSL_KEYFILE = 
+EMAIL_SSL_KEYFILE =
 EMAIL_SSL_CERTIFICATE =
 """
 
 # File backend (for testing only)
 # (comment out the Email settings section if using)
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend' # Only for testing!
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'debug_files', 'emails', 'forgot_password')
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'  # testing!
+EMAIL_FILE_PATH = os.path.join(
+    BASE_DIR,
+    'debug_files',
+    'emails',
+    'forgot_password'
+)
 
 
 AUTH_USER_MODEL = 'users.P7User'
@@ -192,7 +200,8 @@ LOGIN_REDIRECT_URL = reverse_lazy('home')
 #   (default):
 #   - get the csrftoken cookie in the JS
 # Step 2 - Use the token in the AJAX request:
-#   - If using jQuery, see the example code at https://docs.djangoproject.com/en/2.2/ref/csrf/#setting-the-token-on-the-ajax-request
+#   - If using jQuery, see the example code at
+# https://docs.djangoproject.com/en/2.2/ref/csrf/#setting-the-token-on-the-ajax-request
 
 
 # MAXIMUM UPLOAD SIZE

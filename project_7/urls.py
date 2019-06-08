@@ -25,7 +25,7 @@ from . import views
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^accounts/', include('accounts.urls', namespace='accounts')),
-    #re_path(r'^accounts/', include('django.contrib.auth.urls')),
+    # re_path(r'^accounts/', include('django.contrib.auth.urls')),
     re_path(r'^avatar/', include('image_edit.urls', namespace='image_edit')),
     re_path(r'^$', views.home, name='home'),
 
@@ -37,9 +37,12 @@ urlpatterns = [
     re_path(r'account/password-reset/done$',
             auth_views.PasswordResetDoneView.as_view(),
             name="password_reset_done"),  # `password_reset_done.html`
-    re_path(r'account/password-reset/confirm/(?P<uidb64>[\w+]+)/(?P<token>[-\w]+)$',
-            auth_views.PasswordResetConfirmView.as_view(),
-            name="password_reset_confirm"),  # `password_reset_confirm.html`
+    re_path(
+        r'account/password-reset/confirm/(?P<uidb64>[\w+]+)/'
+        r'(?P<token>[-\w]+)$',
+        auth_views.PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm"
+    ),  # `password_reset_confirm.html`
     re_path(r'account/password-reset/complete$',
             auth_views.PasswordResetCompleteView.as_view(),
             name="password_reset_complete"),  # `password_reset_complete.html`
