@@ -16,8 +16,8 @@ from django.core.exceptions import ValidationError
 # The purpose of this class is to override the builtin version
 # (https://github.com/django/django/blob/master/django/contrib/auth/forms.py)
 # so that we can customise it. In this case we are:
-# - adding an email address field (and setting the label text for the email
-#   field)
+# - adding an email address field
+# - setting the label text for the password fields
 class P7UserCreationForm(UserCreationForm):
     password1 = forms.CharField(label="Password",
                                 widget=forms.PasswordInput)
