@@ -4,7 +4,6 @@ import json
 import unittest
 
 from django.contrib.auth import get_user_model, get_user
-User = get_user_model()
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
@@ -14,6 +13,9 @@ from PIL import Image
 
 from accounts.models import UserProfile
 from image_edit.views import cropper, upload_image
+
+
+User = get_user_model()
 
 
 class ImageEditViewsTestCase(TestCase):
@@ -53,9 +55,9 @@ class ImageEditViewsTestCase(TestCase):
     def test_view_renders_correct_template(self):
         if self.abstract:
             return
-    
+
         response = self.client.get(reverse(self.name))
-        
+
         self.assertTemplateUsed(response, self.template)
 
 
@@ -71,7 +73,7 @@ class CropperViewTestCase(ImageEditViewsTestCase):
 
 
 class UploadImageViewTestCase(ImageEditViewsTestCase):
-    
+
     def setUp(self):
         super().setUp()
         self.abstract = False
@@ -110,33 +112,39 @@ class UploadImageViewTestCase(ImageEditViewsTestCase):
         # will not be sent and PIL won't be able to interpret the file as
         # an image.
         test_image_file.seek(0)
-        #test_image_data.seek(0)
+        # test_image_data.seek(0)
 
         # create form data
         self.form_data = {'image': test_image_file}
         # self.form_data = {'image': test_image_data}
 
-
     def make_image_data(self):
-        """Creates an in-memory bytes stream containing image data and returns it"""
+        """Creates an in-memory bytes stream containing image data and
+        returns it
+        """
 
         # Create an in-memory binary stream object
         image_data = BytesIO()
 
+        # https://pillow.readthedocs.io/en/stable/handbook/concepts.html#concept-modes
         image_settings = {
-            'mode': "RGB",  # https://pillow.readthedocs.io/en/stable/handbook/concepts.html#concept-modes
-            'size' : (128, 128)
+            'mode': "RGB",
+            'size': (128, 128)
         }
+        # `fp` : A filename (string), pathlib.Path object or file object
+        # `format` : If None, format is inferred from file extension
+        #      (explicitly setting format is required if using a file object
+        #      instead of a filename)
         stream_settings = {
-            'fp': image_data,  # A filename (string), pathlib.Path object or file object
-            'format': 'JPEG',  # If None, format is inferred from file extension (explicitly setting format is required if using a file object instead of a filename)
+            'fp': image_data,
+            'format': 'JPEG',
 
         }
         image_object = Image.new(**image_settings)
-        image_object.save(**stream_settings)  # write the image data to the stream
+        image_object.save(**stream_settings)  # write the image data to stream
 
         return image_data
-        
+
     def make_image_file(self):
         """Creates an in-memory image file and returns it"""
 
@@ -147,7 +155,8 @@ class UploadImageViewTestCase(ImageEditViewsTestCase):
         # in case we need to be able to work with 'real' files later.
         image_data = self.make_image_data()
 
-        # Note, when getting the string representation of the file it is described as:
+        # Note, when getting the string representation of the file it is
+        # described as:
         # `test_file.jpg (text/plain)`
         # It doesn't seem to be an issue that Django thinks it is a text file:
         # Running readlines on the file reveals it to be a binary file
@@ -156,7 +165,7 @@ class UploadImageViewTestCase(ImageEditViewsTestCase):
 
         print(image_file)
         print(image_file.readlines())
-        
+
         return image_file
 
     @unittest.skip("never renders template, just makes json httpResponse")
@@ -200,7 +209,7 @@ class UploadImageViewTestCase(ImageEditViewsTestCase):
             )
 
     def test_view_uploads_image(self):
-        
+
         # make POST request
         self.client.post(
             reverse(self.name),
