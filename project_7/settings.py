@@ -152,31 +152,6 @@ MEDIA_ROOT = os.path.join(
 )
 MEDIA_URL = '/public/media/'
 
-# Email settings (for production)
-# (comment out the File backend section if using)
-"""
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # This is the default so does not need to be explicitly set
-EMAIL_HOST =  # host IP
-EMAIL_PORT =  # host port
-EMAIL_HOST_USER =  # host username
-EMAIL_HOST_PASSWORD =  # host password
-EMAIL_USE_TLS =
-EMAIL_USE_SSL =
-EMAIL_TIMEOUT = # if not set this uses socket.getdefaulttimeout which has default of None
-EMAIL_SSL_KEYFILE =
-EMAIL_SSL_CERTIFICATE =
-"""
-
-# File backend (for testing only)
-# (comment out the Email settings section if using)
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'  # testing!
-EMAIL_FILE_PATH = os.path.join(
-    BASE_DIR,
-    'debug_files',
-    'emails',
-    'forgot_password'
-)
-
 
 AUTH_USER_MODEL = 'users.P7User'
 
