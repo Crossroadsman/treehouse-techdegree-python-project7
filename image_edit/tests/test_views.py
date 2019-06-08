@@ -163,9 +163,6 @@ class UploadImageViewTestCase(ImageEditViewsTestCase):
         # And PIL is able to read the file without complaint.
         image_file = SimpleUploadedFile('test_file.jpg', image_data.getvalue())
 
-        print(image_file)
-        print(image_file.readlines())
-
         return image_file
 
     @unittest.skip("never renders template, just makes json httpResponse")
@@ -184,20 +181,6 @@ class UploadImageViewTestCase(ImageEditViewsTestCase):
             reverse(self.name),
             self.form_data
         )
-
-        # DEBUG: Review the response
-        print("==== RESPONSE ====")
-        print("---- content (utf-8 encoded bytestring) ----")
-        print(response.content)
-        print("---- end content ----")
-        print("---- content (decoded) ----")
-        print(response.content.decode())
-        print("---- end content ----")
-        print("---- redirect chain ----")
-        # only works if follow=True
-        # print(response.redirect_chain)
-        print("---- end redirect chain ----")
-        print("==== END RESPONSE ====")
 
         decoded = response.content.decode()  # a flat string of JSON
         response_dict = json.loads(decoded)
