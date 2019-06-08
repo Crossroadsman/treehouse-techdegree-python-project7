@@ -1,0 +1,23 @@
+# unlike .gitignore, patterns that match a directory do not recursively 
+# match paths inside that directory. Wherever you would use `path/` in 
+#.gitignore use `path/**` in .gitattributes
+# see: https://git-scm.com/docs/gitattributes
+accounts/admin.py linguist-vendored
+accounts/apps.py linguist-vendored
+accounts/migrations/** linguist-vendored
+assets/css/** linguist-vendored
+assets/images/** linguist-vendored
+assets/js/** linguist-vendored
+extra_credit_image_editor/PNG/** linguist-vendored
+extra_credit_image_editor/*.psd linguist-vendored
+manage.py linguist-vendored
+project_7/wsgi.py linguist-vendored
+staticfiles/** linguist-vendored
+users/admin.py linguist-vendored
+users/apps.py linguist-vendored
+users/migrations/** linguist-vendored
+image_edit/admin.py linguist-vendored
+image_edit/apps.py linguist-vendored
+image_edit/migrations/** linguist-vendored
+image_edit/static/cropper/vendor/** linguist-vendored
+
