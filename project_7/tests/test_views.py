@@ -41,18 +41,17 @@ class Project7ViewsTestCase(TestCase):
     def test_view_renders_correct_template(self):
         if self.abstract:
             return
-    
+
         response = self.client.get(reverse(self.name))
-        
+
         self.assertTemplateUsed(response, self.template)
 
 
 class HomeViewTestCase(Project7ViewsTestCase):
-    
+
     def setUp(self):
         super().setUp()
         self.abstract = False
         self.name += 'home'
         self.target_view = home
         self.template += 'home.html'
-
