@@ -53,14 +53,14 @@ class P7UserChangeForm(UserChangeForm):
     class Meta:
         fields = ("email", "password")
         model = get_user_model()
-    
+
     def __init__(self, *args, **kwargs):
         self.field_order = ['email', 'confirm_email']
         super().__init__(*args, **kwargs)
 
     def clean_password(self):
         return self.initial["password"]
-    
+
     def clean_confirm_email(self):
         email1 = self.cleaned_data.get('email')
         email2 = self.cleaned_data.get('confirm_email')
@@ -89,7 +89,7 @@ class OtherIdentityAttributesValidator(object):
             if hasattr(user, 'userprofile'):
                 given_name = user.userprofile.given_name.lower()
                 family_name = user.userprofile.family_name.lower()
-                
+
                 for name in [given_name, family_name]:
                     # don't add empty string to forbidden words!
                     if len(name) > 0:
@@ -97,22 +97,29 @@ class OtherIdentityAttributesValidator(object):
 
         for word in forbidden_words:
             if word in password.lower():
-                raise ValidationError(self.error_msg['message'], self.error_msg['code'])
+                raise ValidationError(
+                    self.error_msg['message'],
+                    self.error_msg['code']
+                )
 
     def get_help_text(self):
         return self.error_msg['message']
 
-# TODO: Check if we actually need this
+
 class ContentsValidator(object):
-    """Check that the password contains the specified characters"""
+    """Parent class for various validators"""
     error_msg = {
         'code': '',
         'message': ''
     }
     pattern = r''
+
     def validate(self, password, user=None):
         if not re.search(self.pattern, password):
-            raise ValidationError(self.error_msg['message'], self.error_msg['code'])
+            raise ValidationError(
+                self.error_msg['message'],
+                self.error_msg['code']
+            )
 
     def get_help_text(self):
         return self.error_msg['message']
@@ -168,9 +175,9 @@ class PasswordChangeForm(forms.Form):
     (based on the builtin version from Django)
     """
     error_messages = {
-        'password_incorrect': "The existing password you entered was not valid",
+        'password_incorrect': "Existing password entered was not valid",
         'password_mismatch': "The two password fields didn't match",
-        'password_same_as_old': "The new password must differ from the old password",
+        'password_same_as_old': "New password must differ from old password",
     }
 
     old_password = forms.CharField(
@@ -216,7 +223,7 @@ class PasswordChangeForm(forms.Form):
             user=self.user,
         )
         return new_password
-    
+
     def clean_new_password2(self):
         old_password = self.cleaned_data.get("old_password")
         password1 = self.cleaned_data.get("new_password1")

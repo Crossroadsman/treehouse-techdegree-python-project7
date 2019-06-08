@@ -62,7 +62,7 @@ class P7User(AbstractBaseUser):
     # either `email` or `username` could be valid choices for this attribute
     USERNAME_FIELD = 'email'
 
-    # the following is a list of fields that are passed through to the 
+    # the following is a list of fields that are passed through to the
     # create_superuser method (other than USERNAME_FIELD and password)
     # when using (e.g.) `python3 manage.py createsuperuser`
     REQUIRED_FIELDS = []

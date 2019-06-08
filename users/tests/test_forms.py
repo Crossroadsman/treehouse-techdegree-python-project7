@@ -3,22 +3,24 @@ from datetime import date
 from django.test import TestCase
 
 from django.contrib.auth import get_user_model, get_user
-User = get_user_model()
 
 from django.core.exceptions import ValidationError
 
 from accounts.models import UserProfile
-from users.forms import (P7UserCreationForm, P7UserChangeForm, 
+from users.forms import (P7UserCreationForm, P7UserChangeForm,
                          PasswordChangeForm, OtherIdentityAttributesValidator,
-                         ContentsValidator, NumericValidator, 
+                         ContentsValidator, NumericValidator,
                          UpperCaseValidator, LowerCaseValidator,
                          SpecialCharacterValidator)
+
+
+User = get_user_model()
 
 
 # Forms
 # -----
 class P7UserCreationFormTestCase(TestCase):
-    
+
     def test_form_with_valid_inputs_passes_validation(self):
         test_inputs = {
             'password1': 'ValidPass123456,./',
@@ -37,7 +39,10 @@ class P7UserCreationFormTestCase(TestCase):
             'email': 'alicesmith@test.com'
         }
 
-        User.objects.create_user(email=test_inputs['email'], password=test_inputs['password1'])
+        User.objects.create_user(
+            email=test_inputs['email'],
+            password=test_inputs['password1']
+        )
 
         form = P7UserCreationForm(data=test_inputs)
 
@@ -55,7 +60,7 @@ class P7UserChangeFormTestCase(TestCase):
             email=self.user_details['email'],
             password=self.user_details['password']
         )
-    
+
     def test_form_with_valid_inputs_passes_validation(self):
         test_inputs = {
             'email': 'bobjones@test.com',  # new email
@@ -118,7 +123,7 @@ class PasswordChangeFormTestCase(TestCase):
         form = PasswordChangeForm(user=self.user, data=test_inputs)
 
         self.assertFalse(form.is_valid())
-    
+
 
 # Validators
 # ----------
@@ -197,7 +202,7 @@ class SimpleValidatorTestCase(TestCase):
     def test_valid_string_passes_validation(self):
         if self.abstract:
             return
-        
+
         test_password = self.valid_input
 
         self.assertIsNone(self.validator.validate(test_password))
@@ -205,11 +210,12 @@ class SimpleValidatorTestCase(TestCase):
     def test_invalid_string_fails_validation(self):
         if self.abstract:
             return
-        
+
         test_password = self.invalid_input
 
         with self.assertRaises(ValidationError):
             self.validator.validate(test_password)
+
 
 class NumericValidatorTestCase(SimpleValidatorTestCase):
 

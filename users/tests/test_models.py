@@ -10,7 +10,7 @@ class P7UserTestCase(TestCase):
             email='alicesmith@test.com',
             password='UPPERlower123456,./!@#'
         )
-    
+
     def test_user_has_all_required_values(self):
 
         # Test has the required fields for the custom user model
@@ -19,7 +19,7 @@ class P7UserTestCase(TestCase):
         self.assertEqual(self.test_user.is_active, True)
         self.assertEqual(self.test_user.is_staff, False)
         self.assertEqual(self.test_user.is_superuser, False)
-        
+
         # Test existence of MTM relations to Group/Permission
         # non-existent attributes will raise AttributeError
         self.test_user.user_permissions.all()
@@ -32,14 +32,14 @@ class P7UserTestCase(TestCase):
         self.assertEqual(self.test_user.REQUIRED_FIELDS, [])
 
     def test_hasperm_is_implemented(self):
-        
+
         # will fail with AttributeError if not implemented
         # or assertion error if the method is implemented but the wrong
         # result comes back
         self.assertFalse(self.test_user.has_perm('users.some_permission'))
-    
+
     def test_hasmoduleperms_is_implemented(self):
-        
+
         # will fail with AttributeError if not implemented
         # or assertion error if the method is implemented but the wrong
         # result comes back
@@ -50,9 +50,9 @@ class P7UserManagerTestCase(TestCase):
 
     def setUp(self):
         self.manager = P7User.objects
-    
+
     def test_createuser_with_valid_credentials_creates_user(self):
-        
+
         p7users = self.manager.all()
         self.assertEqual(p7users.count(), 0)
 
@@ -70,7 +70,6 @@ class P7UserManagerTestCase(TestCase):
             self.manager.create_user(
                 password='UPPERlower123456,./!@#'
             )
-
 
     def test_createsuperuser_with_valid_credentials_creates_superuser(self):
 
