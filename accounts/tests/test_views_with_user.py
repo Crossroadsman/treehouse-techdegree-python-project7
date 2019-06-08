@@ -257,24 +257,10 @@ class EditProfileViewTest(AccountViewsWithUserTestCase):
         # Build the request with the changes, and then POST it
 
         # POST the form
-        response = self.client.post(
+        self.client.post(
             reverse(self.name),
             data=new_data_combined
         )
-
-        # DEBUG: Review the response
-        # print("==== RESPONSE ====")
-        # print("---- content (utf-8 encoded bytestring) ----")
-        # print(response.content)
-        # print("---- end content ----")
-        # print("---- content (decoded) ----")
-        # print(response.content.decode())
-        # print("---- end content ----")
-        # print("---- redirect chain ----")
-        # # only works if follow=True
-        # # print(response.redirect_chain)
-        # print("---- end redirect chain ----")
-        # print("==== END RESPONSE ====")
 
         # load the model(s)
         user = User.objects.get(pk=user_id)
@@ -353,18 +339,6 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
         new_valid_password = 'SomeRandomString9876,.'
         redirect_target = '/accounts/profile'
 
-        # IMPORTANT
-        # ---------
-        # Per the specifications, only bio and dob are required profile
-        # fields.
-        # If we just create those fields, the other text fields will be
-        # created with blank strings (e.g., first name and last name).
-        # The password validator will then fail any new password because
-        # any string contains the empty string.
-        # TODO
-        # For now, we'll create a full userprofile to get this test to pass
-        # then we'll figure out how to improve the behaviour of the password
-        # validator
         self.userprofile = self.create_userprofile(self.user)
         self.create_optional_userprofile_data()
 
