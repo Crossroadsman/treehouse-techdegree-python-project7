@@ -42,7 +42,7 @@ def upload_image(request):
             print("saving image:")
             up_instance.avatar = image_file
             up_instance.save()
-            
+
             status = 1
             msg = "Ok"
         else:
@@ -52,7 +52,7 @@ def upload_image(request):
     else:
         msg = "No image file"
         print(msg)
-    
+
     url = reverse('accounts:profile')
     response = {
         'status': status,
