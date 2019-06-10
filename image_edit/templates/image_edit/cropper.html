@@ -185,7 +185,6 @@
           }
         });
 
-
         acceptButton.addEventListener('click', function() {
           if (!imageUploaded()) {
             // early exit if no image has been uploaded yet
@@ -195,41 +194,58 @@
           if (!cropper) {
             // send the image in the #image element
             input.disabled = false;
-            uploadForm.submit()
-            return;
-          }
 
-          // send the cropped portion of the cropper object.
-          console.log("cropper active, cropping and sending to server");
-
-          canvas = cropper.getCroppedCanvas();
-          console.log("canvas: ", canvas);
-          canvas.toBlob((blob) => {
-            var formData = new FormData();
-            formData.append('image', blob);
-
-            $.ajax('upload_image', {
-              method: "POST",
-              data: formData,
-              processData: false,
-              contentType: false,
-              success(data) {
-                console.log(data.message);
-                window.location = data.url;
-              },
-              error(data) {
-                console.log(data.message);
-                window.location = data.url;
-              },
+            // ### image -> blob ###
+            // Here we are using fetch to asynchronously get the image
+            // data, then converting that to a blob, then when the bloc
+            // is ready we send it to our custom form submission function
+            fetch(image.src)
+            .then(resp => resp.blob())
+            .then(blob => {
+              submit_form(blob);
             });
-          });
-          
+          } else {
+            // send the cropped portion of the cropper object.
 
+            // ### canvas -> blob ###
+            // Here we are making a Canvas object from Cropper. We then
+            // use the standard JS `canvas.toBlob()` method to make a blob
+            // out of the Canvas object. Once the blob is ready, it sends
+            // the custom form
+            canvas = cropper.getCroppedCanvas();
+            canvas.toBlob((blob) => {
+              submit_form(blob);
+            });
+          }
         });
 
         cancelButton.addEventListener('click', function() {
           window.location = "{% url 'accounts:profile' %}";
         });
+
+        // Custom form submission
+        function submit_form(blob) {
+          // takes a blob then builds and submits a simple form via
+          // AJAX from that blob
+          var formData = new FormData();
+          formData.append('image', blob)
+
+          $.ajax({
+            url: "{% url 'image_edit:upload_image' %}",
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success(data) {
+              console.log(data.message);
+              window.location = data.url;
+            },
+            error(data) {
+              console.log(data.message);
+              window.location = data.url;
+            },
+          });
+        }
 
         // Cropper Transformation Functions
         function rotate(clockwise=true) {

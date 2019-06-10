@@ -2,7 +2,8 @@
 import json
 
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
+#from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -41,15 +42,9 @@ def upload_image(request):
     else:  # no image uploaded
         msg = "No image file"
 
-    url = reverse('accounts:profile')
-    response = {
+    response_dict = {
         'status': status,
         'message': msg,
-        'url': url,
+        'url': reverse('accounts:profile')
     }
-    json_response = json.dumps(response)
-
-    return HttpResponse(
-        json_response,
-        content_type="application/json"
-    )
+    return JsonResponse(response_dict)
