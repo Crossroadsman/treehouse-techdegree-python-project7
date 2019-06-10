@@ -29,15 +29,19 @@
       {% endif %}
     </h1>
     <p>To change your password, click 
-       <a href="{% url 'accounts:change_password' %}">here</a> or customise your profile 
+       <a href="{% url 'accounts:change_password' %}">here</a> otherwise customise your profile 
        using the form below</p>
     <h3>Avatar:</h3>
-    {% if user.userprofile.avatar %}
-      <p><img src="{{ user.userprofile.avatar.url }}" alt="edit avatar" width="200"></p>
-      <p><a href="{% url 'image_edit:cropper' %}">Replace</a></p>
+    {% if user.userprofile %}
+      {% if user.userprofile.avatar %}
+        <p><img src="{{ user.userprofile.avatar.url }}" width="200"></p>
+        <p><a href="{% url 'image_edit:cropper' %}">Replace</a></p>
+      {% else %}
+        <a href="{% url 'image_edit:cropper' %}">Upload an avatar.</a>
+      {% endif %} {# user.userprofile.avatar #}
     {% else %}
-      <a href="{% url 'image_edit:cropper' %}">Upload an avatar.</a>
-    {% endif %}
+      <p>Before you can upload an avatar you must create a profile with at least the minimum required fields completed: <strong>Date of birth</strong>, <strong>Bio</strong></p>
+    {% endif %} {# user.userprofile #}
     
      <div>
       <form method="POST" enctype="multipart/form-data">
