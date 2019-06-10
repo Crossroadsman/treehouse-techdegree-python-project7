@@ -103,6 +103,7 @@
         var rotateRightButton = document.getElementById('editor-rotate-right');
         var flipButton = document.getElementById('editor-flip');
         var acceptButton = document.getElementById('editor-accept');
+        var cancelButton = document.getElementById('editor-cancel');
 
         // other variables
         var cropper;  // will be instantiated by one of the buttons
@@ -224,6 +225,10 @@
           });
           
 
+        });
+
+        cancelButton.addEventListener('click', function() {
+          window.location = "{% url 'accounts:profile' %}";
         });
 
         // Cropper Transformation Functions
