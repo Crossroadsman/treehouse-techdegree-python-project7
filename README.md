@@ -1,10 +1,13 @@
 Project 7: User Profile With Django
 ===================================
 
-User: test@test.com
+Note: The minimum version of Python compatible with this project is 3.6 (December 2016)
 
-Password:
-Project7-UserProfile
+Superuser
+---------
+
+- User: test@test.com
+- Password: Project7-UserProfile
 
 Testing
 -------
