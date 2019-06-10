@@ -1,10 +1,4 @@
-beautifulsoup4==4.7.1
 Django==2.2.2
 django-ckeditor==5.7.1
-django-js-asset==1.2.2
 html-sanitizer==1.7.2
-lxml==4.3.3
 Pillow==6.0.0
-pytz==2019.1
-soupsieve==1.9.1
-sqlparse==0.3.0
