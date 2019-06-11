@@ -48,13 +48,13 @@ Feature Checklist
 - [x] : Has an "Edit" view with:
   - [x] : "/profile/edit" route
   - [x] : Allows the user to edit the following profile fields:
-    - [x] : First Name
-    - [x] : Last Name
-    - [x] : Email
-    - [x] : Date of Birth
-    - [x] : Confirm Email
-    - [x] : Bio
-    - [x] : Avatar
+  - [x] : First Name
+  - [x] : Last Name
+  - [x] : Email
+  - [x] : Date of Birth
+  - [x] : Confirm Email
+  - [x] : Bio
+  - [x] : Avatar
 - [x] : Validates "Date of Birth" field, supporting the following formats:
   - [x] : YYYY-MM-DD
   - [x] : MM/DD/YYYY
@@ -75,29 +75,29 @@ Feature Checklist
   - [x] : check old password is correct (using `User.check_password()`)
   - [x] : new password matches the confirm password field
   - [x] : follows the password policy:
-    - [x] : not same as existing password
-    - [x] : minimum length 14 characters
-    - [x] : must have uppercase character
-    - [x] : must have lowercase character
-    - [x] : must include one or more numerical digits
-    - [x] : must include special character
-    - [x] : cannot include username or user's first or last names
+  - [x] : not same as existing password
+  - [x] : minimum length 14 characters
+  - [x] : must have uppercase character
+  - [x] : must have lowercase character
+  - [x] : must include one or more numerical digits
+  - [x] : must include special character
+  - [x] : cannot include username or user's first or last names
 - [x] : headings/font/forms are styled using CSS
 - [ ] : Code complies with PEP8
 
 ### Extra Credit Features ###
 
-- [x]: Include additional form fields such as:
-  - [x]: city/state/country of residence
-  - [x]: favourite animal
-  - [x]: hobby
-- [x]: JavaScript used for a date dropdown for DoB validation feature
-- [x]: JS is used for text formatting for the Bio validation feature
-- [x]: Avatar has online image editor. Include the following functionality:
-  - [x]: rotate
-  - [x]: crop
-  - [x]: flip
-- [x]: Password strength "meter" displayed when validating passwords
+- [x] : Include additional form fields such as:
+  - [x] : city/state/country of residence
+  - [x] : favourite animal
+  - [x] : hobby
+- [x] : JavaScript used for a date dropdown for DoB validation feature
+- [x] : JS is used for text formatting for the Bio validation feature
+- [x] : Avatar has online image editor. Include the following functionality:
+  - [x] : rotate
+  - [x] : crop
+  - [x] : flip
+- [x] : Password strength "meter" displayed when validating passwords
 
 Testing
 -------
