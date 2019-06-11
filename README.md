@@ -14,20 +14,20 @@ Feature Checklist
 
 ### Base Features ###
 
-- [x]: Uses provided base HTML/CSS
-- [ ]: Has Django model for user profile
-- [ ]: Has routes to:
-  - [ ]: Display a profile
-  - [ ]: Edit a profile
-  - [ ]: Change the password
-- [ ]: Has a "profile" view that displays a user profile with the following
+- [x] : Uses provided base HTML/CSS
+- [ ] : Has Django model for user profile
+- [ ] : Has routes to:
+  - [ ] : Display a profile
+  - [ ] : Edit a profile
+  - [ ] : Change the password
+- [ ] : Has a "profile" view that displays a user profile with the following
   fields:
-  - [ ]: First Name
-  - [ ]: Last Name
-  - [ ]: Email
-  - [ ]: Date of Birth
-  - [ ]: Bio
-  - [ ]: Avatar
+  - [ ] : First Name
+  - [ ] : Last Name
+  - [ ] : Email
+  - [ ] : Date of Birth
+  - [ ] : Bio
+  - [ ] : Avatar
 - [ ]: Profile view has a link to edit the profile
 - [ ]: Has an "Edit" view with:
   - [ ]: "/profile/edit" route
