@@ -28,46 +28,46 @@ Feature Checklist
   - [ ] : Date of Birth
   - [ ] : Bio
   - [ ] : Avatar
-- [ ]: Profile view has a link to edit the profile
-- [ ]: Has an "Edit" view with:
-  - [ ]: "/profile/edit" route
-  - [ ]: Allows the user to edit the following profile fields:
-    - [ ]: First Name
-    - [ ]: Last Name
-    - [ ]: Email
-    - [ ]: Date of Birth
-    - [ ]: Confirm Email
-    - [ ]: Bio
-    - [ ]: Avatar
-- [ ]: Validates "Date of Birth" field, supporting the following formats:
-  - [ ]: YYYY-MM-DD
-  - [ ]: MM/DD/YYYY
-  - [ ]: MM/DD/YY
-- [ ]: Validates "Email" field:
-  - [ ]: Check email matches confirm email
-  - [ ]: Check email is valid format
-- [ ]: Validates "Bio" field:
-  - [ ]: Checks bio is at least 10 characters
-  - [ ]: Properly escapes HTML formatting
-- [ ]: Ability to upload and save user's avatar image
-- [ ]: Has view "change-password":
-  - [ ]: with route "/profile/change_password"
-  - [ ]: that allows user to update their password using `User.set_password()` 
+- [ ] : Profile view has a link to edit the profile
+- [ ] : Has an "Edit" view with:
+  - [ ] : "/profile/edit" route
+  - [ ] : Allows the user to edit the following profile fields:
+    - [ ] : First Name
+    - [ ] : Last Name
+    - [ ] : Email
+    - [ ] : Date of Birth
+    - [ ] : Confirm Email
+    - [ ] : Bio
+    - [ ] : Avatar
+- [ ] : Validates "Date of Birth" field, supporting the following formats:
+  - [ ] : YYYY-MM-DD
+  - [ ] : MM/DD/YYYY
+  - [ ] : MM/DD/YY
+- [ ] : Validates "Email" field:
+  - [ ] : Check email matches confirm email
+  - [ ] : Check email is valid format
+- [ ] : Validates "Bio" field:
+  - [ ] : Checks bio is at least 10 characters
+  - [ ] : Properly escapes HTML formatting
+- [ ] : Ability to upload and save user's avatar image
+- [ ] : Has view "change-password":
+  - [ ] : with route "/profile/change_password"
+  - [ ] : that allows user to update their password using `User.set_password()` 
     then `User.save()`.
-  - [ ]: form fields are `current_password`, `new_password`, `confirm_password`
-- [ ]: Validates user input "password" fields:
-  - [ ]: check old password is correct (using `User.check_password()`)
-  - [ ]: new password matches the confirm password field
-  - [ ]: follows the password policy:
-    - [ ]: not same as existing password
-    - [ ]: minimum length 14 characters
-    - [ ]: must have uppercase character
-    - [ ]: must have lowercase character
-    - [ ]: must include one or more numerical digits
-    - [ ]: must include special character
-    - [ ]: cannot include username or user's first or last names
-- [ ]: headings/font/forms are styled using CSS
-- [ ]: Code complies with PEP8
+  - [ ] : form fields are `current_password`, `new_password`, `confirm_password`
+- [ ] : Validates user input "password" fields:
+  - [ ] : check old password is correct (using `User.check_password()`)
+  - [ ] : new password matches the confirm password field
+  - [ ] : follows the password policy:
+    - [ ] : not same as existing password
+    - [ ] : minimum length 14 characters
+    - [ ] : must have uppercase character
+    - [ ] : must have lowercase character
+    - [ ] : must include one or more numerical digits
+    - [ ] : must include special character
+    - [ ] : cannot include username or user's first or last names
+- [ ] : headings/font/forms are styled using CSS
+- [ ] : Code complies with PEP8
 
 ### Extra Credit Features ###
 
