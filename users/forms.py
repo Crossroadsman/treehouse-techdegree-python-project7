@@ -206,7 +206,7 @@ class PasswordChangeForm(forms.Form):
     def clean_current_password(self):
         """Validate that the old password field is correct."""
         current_password = self.cleaned_data.get("current_password")
-        
+
         if not self.user.check_password(current_password):
             raise forms.ValidationError(
                 self.error_messages['password_incorrect'],
