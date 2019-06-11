@@ -29,6 +29,10 @@
               <td>{{ profile.family_name }}</td>
             </tr>
             <tr>
+              <td>Date of Birth</td>
+              <td>{{ profile.date_of_birth }}</td>
+            </tr>
+            <tr>
               <td>Avatar:</td>
               {% if profile.avatar %}
                 <td>
@@ -39,10 +43,6 @@
                   None
                 </td>
               {% endif %}
-            </tr>
-            <tr>
-              <td>Date of Birth</td>
-              <td>{{ profile.date_of_birth }}</td>
             </tr>
             <tr>
               <td>City</td>

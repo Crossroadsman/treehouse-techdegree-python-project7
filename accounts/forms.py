@@ -12,7 +12,7 @@ class UserProfileForm(forms.ModelForm):
         label="Date of birth",
         input_formats=['%Y-%m-%d',      # '2006-10-25'
                        '%m/%d/%Y',      # '10/25/2006'
-                       '%d/%m/%y']      # '25/10/06'
+                       '%m/%d/%y']      # '10/25/06'
     )
 
     # Note that method declarations for cleaning must come before the
