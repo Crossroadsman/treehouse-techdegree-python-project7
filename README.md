@@ -3,11 +3,27 @@ Project 7: User Profile With Django
 
 Note: The minimum version of Python compatible with this project is 3.6 (December 2016)
 
-Superuser
----------
+Installation
+------------
+
+- Clone the repo
+- Create and activate a venv
+- To run the application install the required packages using `pip install -r requirements.txt`
+- To be able to recreate coverage report you will also need to install the additional testing packages 
+  using `pip install -r test-requirements.txt`
+
+Included Users
+--------------
+
+### Super User ###
 
 - User: test@test.com
 - Password: Project7-UserProfile
+
+### Demo User ###
+
+- User: demo@test.com
+- Password: UPPERlower12345,./
 
 Feature Checklist
 -----------------
@@ -15,7 +31,7 @@ Feature Checklist
 ### Base Features ###
 
 - [x] : Uses provided base HTML/CSS
-- [ ] : Has Django model for user profile
+- [x] : Has Django model for user profile
 - [ ] : Has routes to:
   - [ ] : Display a profile
   - [ ] : Edit a profile
@@ -81,7 +97,7 @@ Feature Checklist
   - [ ]: rotate
   - [ ]: crop
   - [ ]: flip
-- [ ]: Password strength "meter" displayed when validating passwords
+- [x]: Password strength "meter" displayed when validating passwords
 
 Testing
 -------
