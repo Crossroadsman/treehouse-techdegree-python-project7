@@ -17,13 +17,13 @@ Included Users
 
 ### Super User ###
 
-- User: test@test.com
-- Password: Project7-UserProfile
+- User: `test@test.com`
+- Password: `Project7-UserProfile`
 
 ### Demo User ###
 
-- User: demo@test.com
-- Password: UPPERlower12345,./
+- User: `demo@test.com`
+- Password: `UPPERlower12345,./`
 
 Feature Checklist
 -----------------
@@ -32,71 +32,71 @@ Feature Checklist
 
 - [x] : Uses provided base HTML/CSS
 - [x] : Has Django model for user profile
-- [ ] : Has routes to:
-  - [ ] : Display a profile
-  - [ ] : Edit a profile
-  - [ ] : Change the password
-- [ ] : Has a "profile" view that displays a user profile with the following
+- [x] : Has routes to:
+  - [x] : Display a profile
+  - [x] : Edit a profile
+  - [x] : Change the password
+- [x] : Has a "profile" view that displays a user profile with the following
   fields:
-  - [ ] : First Name
-  - [ ] : Last Name
-  - [ ] : Email
-  - [ ] : Date of Birth
-  - [ ] : Bio
-  - [ ] : Avatar
-- [ ] : Profile view has a link to edit the profile
-- [ ] : Has an "Edit" view with:
-  - [ ] : "/profile/edit" route
-  - [ ] : Allows the user to edit the following profile fields:
-    - [ ] : First Name
-    - [ ] : Last Name
-    - [ ] : Email
-    - [ ] : Date of Birth
-    - [ ] : Confirm Email
-    - [ ] : Bio
-    - [ ] : Avatar
-- [ ] : Validates "Date of Birth" field, supporting the following formats:
-  - [ ] : YYYY-MM-DD
-  - [ ] : MM/DD/YYYY
-  - [ ] : MM/DD/YY
-- [ ] : Validates "Email" field:
-  - [ ] : Check email matches confirm email
-  - [ ] : Check email is valid format
-- [ ] : Validates "Bio" field:
-  - [ ] : Checks bio is at least 10 characters
-  - [ ] : Properly escapes HTML formatting
-- [ ] : Ability to upload and save user's avatar image
-- [ ] : Has view "change-password":
-  - [ ] : with route "/profile/change_password"
-  - [ ] : that allows user to update their password using `User.set_password()` 
+  - [x] : First Name
+  - [x] : Last Name
+  - [x] : Email
+  - [x] : Date of Birth
+  - [x] : Bio
+  - [x] : Avatar
+- [x] : Profile view has a link to edit the profile
+- [x] : Has an "Edit" view with:
+  - [x] : "/profile/edit" route
+  - [x] : Allows the user to edit the following profile fields:
+    - [x] : First Name
+    - [x] : Last Name
+    - [x] : Email
+    - [x] : Date of Birth
+    - [x] : Confirm Email
+    - [x] : Bio
+    - [x] : Avatar
+- [x] : Validates "Date of Birth" field, supporting the following formats:
+  - [x] : YYYY-MM-DD
+  - [x] : MM/DD/YYYY
+  - [x] : MM/DD/YY
+- [x] : Validates "Email" field:
+  - [x] : Check email matches confirm email
+  - [x] : Check email is valid format
+- [x] : Validates "Bio" field:
+  - [x] : Checks bio is at least 10 characters
+  - [x] : Properly escapes HTML formatting
+- [x] : Ability to upload and save user's avatar image
+- [x] : Has view "change-password":
+  - [x] : with route "/profile/change_password"
+  - [x] : that allows user to update their password using `User.set_password()` 
     then `User.save()`.
-  - [ ] : form fields are `current_password`, `new_password`, `confirm_password`
-- [ ] : Validates user input "password" fields:
-  - [ ] : check old password is correct (using `User.check_password()`)
-  - [ ] : new password matches the confirm password field
-  - [ ] : follows the password policy:
-    - [ ] : not same as existing password
-    - [ ] : minimum length 14 characters
-    - [ ] : must have uppercase character
-    - [ ] : must have lowercase character
-    - [ ] : must include one or more numerical digits
-    - [ ] : must include special character
-    - [ ] : cannot include username or user's first or last names
-- [ ] : headings/font/forms are styled using CSS
+  - [x] : form fields are `current_password`, `new_password`, `confirm_password`
+- [x] : Validates user input "password" fields:
+  - [x] : check old password is correct (using `User.check_password()`)
+  - [x] : new password matches the confirm password field
+  - [x] : follows the password policy:
+    - [x] : not same as existing password
+    - [x] : minimum length 14 characters
+    - [x] : must have uppercase character
+    - [x] : must have lowercase character
+    - [x] : must include one or more numerical digits
+    - [x] : must include special character
+    - [x] : cannot include username or user's first or last names
+- [x] : headings/font/forms are styled using CSS
 - [ ] : Code complies with PEP8
 
 ### Extra Credit Features ###
 
-- [ ]: Include additional form fields such as:
-  - [ ]: city/state/country of residence
-  - [ ]: favourite animal
-  - [ ]: hobby
-- [ ]: JavaScript used for a date dropdown for DoB validation feature
-- [ ]: JS is used for text formatting for the Bio validation feature
-- [ ]: Avatar has online image editor. Include the following functionality:
-  - [ ]: rotate
-  - [ ]: crop
-  - [ ]: flip
+- [x]: Include additional form fields such as:
+  - [x]: city/state/country of residence
+  - [x]: favourite animal
+  - [x]: hobby
+- [x]: JavaScript used for a date dropdown for DoB validation feature
+- [x]: JS is used for text formatting for the Bio validation feature
+- [x]: Avatar has online image editor. Include the following functionality:
+  - [x]: rotate
+  - [x]: crop
+  - [x]: flip
 - [x]: Password strength "meter" displayed when validating passwords
 
 Testing
