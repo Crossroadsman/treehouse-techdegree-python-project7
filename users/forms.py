@@ -180,18 +180,18 @@ class PasswordChangeForm(forms.Form):
         'password_same_as_old': "New password must differ from old password",
     }
 
-    old_password = forms.CharField(
+    current_password = forms.CharField(
         label="Current Password",
         strip=False,
         widget=forms.PasswordInput(attrs={'autofocus': True})
     )
-    new_password1 = forms.CharField(
+    new_password = forms.CharField(
         label="New Password",
         strip=False,
         widget=forms.PasswordInput(),
         help_text=password_validation.password_validators_help_text_html()
     )
-    new_password2 = forms.CharField(
+    confirm_password = forms.CharField(
         label="Confirm Password",
         strip=False,
         widget=forms.PasswordInput()
@@ -201,21 +201,21 @@ class PasswordChangeForm(forms.Form):
         self.user = user
         super().__init__(*args, **kwargs)
 
-    field_order = ['old_password', 'new_password1', 'new_password2']
+    field_order = ['current_password', 'new_password', 'confirm_password']
 
     def clean_old_password(self):
         """Validate that the old password field is correct."""
-        old_password = self.cleaned_data.get("old_password")
-        if not self.user.check_password(old_password):
+        current_password = self.cleaned_data.get("current_password")
+        if not self.user.check_password(current_password):
             raise forms.ValidationError(
                 self.error_messages['password_incorrect'],
                 code="password_incorrect",
             )
-        return old_password
+        return current_password
 
     def clean_new_password1(self):
         """Validate that the new password meets our password rules"""
-        new_password = self.cleaned_data.get("new_password1")
+        new_password = self.cleaned_data.get("new_password")
         # password_validation.validate_password returns None if valid or
         # a list of errors if there are any
         password_validation.validate_password(
@@ -225,15 +225,15 @@ class PasswordChangeForm(forms.Form):
         return new_password
 
     def clean_new_password2(self):
-        old_password = self.cleaned_data.get("old_password")
-        password1 = self.cleaned_data.get("new_password1")
-        password2 = self.cleaned_data.get("new_password2")
+        current_password = self.cleaned_data.get("current_password")
+        password1 = self.cleaned_data.get("new_password")
+        password2 = self.cleaned_data.get("confirm_password")
         if password1 != password2:
             raise forms.ValidationError(
                 self.error_messages['password_mismatch'],
                 code='password_mismatch'
             )
-        if password1 == old_password:
+        if password1 == current_password:
             raise forms.ValidationError(
                 self.error_messages['password_same_as_old'],
                 code='password_same_as_old'
@@ -241,7 +241,7 @@ class PasswordChangeForm(forms.Form):
         return password2
 
     def save(self, commit=True):
-        password = self.cleaned_data.get("new_password1")
+        password = self.cleaned_data.get("new_password")
         self.user.set_password(password)
         if commit:
             self.user.save()
