@@ -83,7 +83,7 @@ Feature Checklist
   - [x] : must include special character
   - [x] : cannot include username or user's first or last names
 - [x] : headings/font/forms are styled using CSS
-- [ ] : Code complies with PEP8
+- [x] : Code complies with PEP8
 
 ### Extra Credit Features ###
 
