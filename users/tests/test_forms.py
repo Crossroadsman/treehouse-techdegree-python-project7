@@ -93,9 +93,9 @@ class PasswordChangeFormTestCase(TestCase):
 
     def test_form_with_valid_inputs_passes_validation(self):
         test_inputs = {
-            'old_password': self.old_password,
-            'new_password1': 'NewValidPass7890!@#',
-            'new_password2': 'NewValidPass7890!@#',
+            'current_password': self.old_password,
+            'new_password': 'NewValidPass7890!@#',
+            'confirm_password': 'NewValidPass7890!@#',
         }
 
         form = PasswordChangeForm(user=self.user, data=test_inputs)
@@ -104,9 +104,9 @@ class PasswordChangeFormTestCase(TestCase):
 
     def test_form_fails_validation_if_passwords_dont_match(self):
         test_inputs = {
-            'old_password': self.old_password,
-            'new_password1': 'NewValidPass7890!@#',
-            'new_password2': 'OtherValidPass7890!@#',
+            'current_password': self.old_password,
+            'new_password': 'NewValidPass7890!@#',
+            'confirm_password': 'OtherValidPass7890!@#',
         }
 
         form = PasswordChangeForm(user=self.user, data=test_inputs)
@@ -115,9 +115,9 @@ class PasswordChangeFormTestCase(TestCase):
 
     def test_form_fails_validation_if_old_password_wrong(self):
         test_inputs = {
-            'old_password': 'TheWrongPassword',
-            'new_password1': 'NewValidPass7890!@#',
-            'new_password1': 'NewValidPass7890!@#',
+            'current_password': 'TheWrongPassword',
+            'new_password': 'NewValidPass7890!@#',
+            'confirm_password': 'NewValidPass7890!@#',
         }
 
         form = PasswordChangeForm(user=self.user, data=test_inputs)

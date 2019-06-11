@@ -311,7 +311,7 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
         self.abstract = False
         self.name += 'change_password'
         self.template += 'change_password.html'
-        self.url += 'profile/change-password'
+        self.url += 'profile/change_password'
         self.target_view = change_password
 
     # renders view on GET
@@ -325,9 +325,9 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
         response = self.client.post(
             reverse(self.name),
             data={
-                'old_password': wrong_password,
-                'new_password1': self.test_credentials['password'],
-                'new_password2': self.test_credentials['password']
+                'current_password': wrong_password,
+                'new_password': self.test_credentials['password'],
+                'confirm_password': self.test_credentials['password']
             }
         )
 
@@ -345,9 +345,9 @@ class ChangePasswordViewTest(AccountViewsWithUserTestCase):
         response = self.client.post(
             reverse(self.name),
             data={
-                'old_password': self.test_credentials['password'],
-                'new_password1': new_valid_password,
-                'new_password2': new_valid_password
+                'current_password': self.test_credentials['password'],
+                'new_password': new_valid_password,
+                'confirm_password': new_valid_password
             },
         )
 

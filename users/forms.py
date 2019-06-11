@@ -203,9 +203,10 @@ class PasswordChangeForm(forms.Form):
 
     field_order = ['current_password', 'new_password', 'confirm_password']
 
-    def clean_old_password(self):
+    def clean_current_password(self):
         """Validate that the old password field is correct."""
         current_password = self.cleaned_data.get("current_password")
+        
         if not self.user.check_password(current_password):
             raise forms.ValidationError(
                 self.error_messages['password_incorrect'],
@@ -213,7 +214,7 @@ class PasswordChangeForm(forms.Form):
             )
         return current_password
 
-    def clean_new_password1(self):
+    def clean_new_password(self):
         """Validate that the new password meets our password rules"""
         new_password = self.cleaned_data.get("new_password")
         # password_validation.validate_password returns None if valid or
@@ -224,7 +225,7 @@ class PasswordChangeForm(forms.Form):
         )
         return new_password
 
-    def clean_new_password2(self):
+    def clean_confirm_password(self):
         current_password = self.cleaned_data.get("current_password")
         password1 = self.cleaned_data.get("new_password")
         password2 = self.cleaned_data.get("confirm_password")

@@ -1,6 +1,6 @@
 // elements
 const password1Field = document.getElementById("id_password1"); 
-const newPasswordField = document.getElementById("id_new_password1");
+const newPasswordField = document.getElementById("id_new_password");
 let passwordField;
 
 if (password1Field) {
